@@ -10,13 +10,15 @@
 \newcommand{\norm}[1]{\left|\left|#1\right|\right|}
 
 \usepackage{MyTemplate}
-\DefaultMathsDigits
 \captionsetup[table]{skip=0pt}
 \begin{document}
 \begin{titlepage}
 \input{title}
 \end{titlepage}
-%\settextfont{B Yas}
+
+\settextfont[Scale=1.05]{XB Niloofar}
+\setlatintextfont[Scale=0.9]{Linux Libertine}
+\setdigitfont[Scale=1]{XB Niloofar}
 
 \input{Seminar_Abstract}
 \setlength{\parindent}{0.2in} %The indent of the paragraph first line
@@ -32,7 +34,7 @@
 \setlength{\parskip}{0pt}
 \setlength{\parsep}{0pt}
 
-\renewcommand{\bibname}{\rl{مراجع} \hfill}
+%\renewcommand{\bibname}{\rl{مراجع} \hfill}
 \bibliographystyle{ieeetr-fa}
 \bibliography{Seminar_References}
 
@@ -43,6 +45,3 @@
 \end{multicols}
 \end{LTR}
 \end{document}
-\newpage
-
-

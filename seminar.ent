@@ -14,3 +14,38 @@ learning
 macro:->Transfer
 Learning
 \@endanenote 
+\@doanenote {5}
+macro:->Hamming
+\@endanenote 
+\@doanenote {6}
+macro:->Meta-data
+\@endanenote 
+\@doanenote {7}
+macro:->Tag
+\@endanenote 
+\@doanenote {8}
+macro:->Mulit-label
+Classification
+\@endanenote 
+\@doanenote {9}
+macro:->Logistic
+Regression
+\@endanenote 
+\@doanenote {10}
+macro:->
+Topic
+Modeling
+\@endanenote 
+\@doanenote {11}
+macro:->
+Baysian
+Network
+\@endanenote 
+\@doanenote {12}
+macro:->Structure
+Learning
+\@endanenote 
+\@doanenote {13}
+macro:->Regularization
+Term
+\@endanenote 

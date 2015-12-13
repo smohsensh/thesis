@@ -1,5 +1,5 @@
 \documentclass[11pt]{article}
-\usepackage{amsmath}
+\usepackage{amsmath, amssymb,amsthm}
 \usepackage{tabularx}
 \usepackage{slashbox}
 \usepackage{multirow}
@@ -7,8 +7,9 @@
 %\graphicspath{{images/}}
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
-\newcommand{\norm}[1]{\left|\left|#1\right|\right|}
-
+\DeclareMathOperator*{\minimize}{minimize}
+\newcommand{\normf}[1]{\left \lVert #1 \right \rVert_{Fro}^2}
+\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
 \usepackage{MyTemplate}
 \captionsetup[table]{skip=0pt}
 \begin{document}

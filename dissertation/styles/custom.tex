@@ -1,0 +1,43 @@
+
+% -------------------------------------------------------
+%  Custom Definitions
+% -------------------------------------------------------
+
+
+\newcommand{\OPT}{\ensuremath{\mbox{\rm OPT}}}
+\newcommand{\opt}{\ensuremath{\mbox{\rm opt}}}
+\newcommand{\APX}{\ensuremath{\mbox{\rm APX}}}
+\newcommand{\apx}{\ensuremath{\mbox{\tt apx}}}
+\newcommand{\ALG}{\ensuremath{\mbox{\rm ALG}}}
+
+
+% -------------------- Environments --------------------
+
+
+\newenvironment{الگوریتم}[2]{
+	\begin{minipage}{\textwidth}
+	\begin{الگوریتم‌بلند}{#1}{#2}
+}{
+	\end{الگوریتم‌بلند}
+	\end{minipage}
+}
+
+\newcounter{myalg}
+\newenvironment{الگوریتم‌بلند}[2]{
+	\refstepcounter{myalg}
+	\bigskip \medskip
+	\hrule height .06em 
+	\vspace{.1em}
+	\noindent\textbf{الگوریتم~\arabic{myalg} \ } #1 \label{#2}
+	\vspace{.3em}
+	\hrule height .07em 
+	\vspace{-.5em}
+	\begin{enumerate}[label={\arabic*},itemsep=.1em, parsep=.1em]
+}{
+	\end{enumerate}
+	\bigskip
+	\vspace{-1em}
+	\hrule height .06em
+	\bigskip
+}
+

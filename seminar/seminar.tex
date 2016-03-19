@@ -1,0 +1,49 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb,amsthm}
+\usepackage{tabularx}
+\usepackage{slashbox}
+\usepackage{multirow}
+\usepackage{wrapfig}
+%\graphicspath{{images/}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\minimize}{minimize}
+\newcommand{\norm}[1]{\left \lVert #1 \right \rVert}
+\newcommand{\normf}[1]{\left \lVert #1 \right \rVert_{Fro}^2}
+\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+\usepackage{MyTemplate}
+\captionsetup[table]{skip=0pt}
+\begin{document}
+\begin{titlepage}
+\input{title}
+\end{titlepage}
+
+\settextfont[Scale=1.05]{XB Niloofar}
+\setlatintextfont[Scale=0.9]{Linux Libertine}
+\setdigitfont[Scale=1]{XB Niloofar}
+
+\input{Seminar_Abstract}
+\setlength{\parindent}{0.2in} %The indent of the paragraph first line
+\input{Seminar_Introduction}
+\input{Seminar_PriorWorks}
+\input{Seminar_ProposedMethod}
+\input{Seminar_Experiments}
+\input{Seminar_FutureWorks}
+\input{Seminar_Conclusion}
+
+\linespread{1}
+\small
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+
+%\renewcommand{\bibname}{\rl{مراجع} \hfill}
+\bibliographystyle{ieeetr-fa}
+\bibliography{Seminar_References}
+
+\section{واژه‌نامه}
+\begin{LTR}
+\begin{multicols}{3}
+\theendnotes 
+\end{multicols}
+\end{LTR}
+\end{document}

@@ -1,0 +1,27 @@
+<!1,2013090109:42:54>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html><head><meta name="qrichtext" content="1" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">
+p, li { white-space: pre-wrap; }
+</style></head><body>
+<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;"></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;">% -------------------------------------------------------</p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;">%  ‎Abstract‎</p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;">% -------------------------------------------------------</p>
+<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;"></p>
+<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;"></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;">‎\pagestyle{empty}‎</p>
+<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;"></p>
+<p dir='rtl' style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;">‎\شروع{وسط‌چین}‎</p>
+<p dir='rtl' style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;">‎\مهم{چکیده}‎</p>
+<p dir='rtl' style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;">‎\پایان{وسط‌چین}‎</p>
+<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;"></p>
+<p dir='rtl' style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;">در‎ این پژوهش‏، پیدا کردن الگوریتم‌های تقریبی برای برخی از مسائل هندسه محاسباتی زمانی‌که نقاط نادقیق هستند را مورد بررسی قرار دادیم. برای مدل کردن نقاط نادقیق‏، آنها را در مدل مجموعه نقاط رنگی گسسته در نظر گرفتیم. یک مجموعه از ‎‎$‎n‎$‎‎‎‎ نقطه در فضای ‎‎$‎d‎$‎‎-بعدی داده شده است که با ‎‎$‎m‎$‎ رنگ رنگ‌آمیزی شده‌اند. مسئله کوچکترین قطر رنگی‏، پیدا کردن ‎‎$‎m‎$‎‎ نقطه با رنگ‌های دو‌به‌دو متمایز است بطوری‌که قطر این مجموعه انتخاب شده کمینه باشد. برای این مسئله یک الگوریتم تقریبی با ضریب تقریب ‎‎$‎(1+‎\epsilon‎)‎$‎ با زمان‎‎</p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;">‎‎‎$‎O‎( ‎‎n^2 ( n + 2^{‎\frac{1}{\epsilon^d}‎} ‎(‎\frac{n}{\epsilon^d}+(‎\frac{1}{\epsilon^d})^2))‎$‎‎‎‎‎</p>
+<p dir='rtl' style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;">ارائه کردیم که با این کار نتایج قبلی را بهبود دادیم. در ادامه‏، مساله جدید پیدا کردن کران برای مسئله پوشش واحد در مدل مجموعه نقاط رنگی گسسته را بررسی کردیم.  مسئله پوشش رنگی کمینه پیدا کردن ‎‎$‎m‎$‎‎‎ نقطه با رنگ‌های متفاوت است بطوری‌که تعداد توپ‌های واحد مورد نیاز برای پوشاندن آنها کمینه شود. بطور مشابه مسئله پوشش رنگی بیشینه انتخاب یک نقطه  از هر رنگ است به نحوی‌که توپ‌های واحد مورد نیاز برای پوشاندن آنها بیشینه شود. درحالی‌که پوشش رنگی کمینه حتی در یک بعد ان‌پی‌-سخت است و برای آن الگوریتم تقریبی با ضریب تقریب ثابت وجود ندارد‏، برای آن یک الگوریتم تقریبی با ضریب تقریب ‎‎$‎ln(m)‎$‎ ارائه کردیم. بعلاوه در یک بعد یک الگوریتم تقریبی با ضریب تقریب ثابت برای ‎‎$‎f‎$‎های ثابت نشان دادیم بطوری‌که ‎‎$‎f‎‎$‎ بیشترین تعداد تکرار یک رنگ است‎. برای مسئله پوشش واحد بیشینه ثابت کردیم ان‌پی‌-سخت است و برای آن یک الگوریتم با ضریب تقریب ‎$‎‎‎‎\frac{1}{2}‎$‎‎ در یک بعد طرح کردیم. </p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;">‎</p>
+<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;"></p>
+<p dir='rtl' style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;">‎\‎پرش‌بلند</p>
+<p dir='rtl' style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;">‎\‎بدون‌تورفتگی ‎\‎مهم{کلیدواژه‌ها}: </p>
+<p dir='rtl' style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;">هندسه محاسباتی‎‎‏، الگوریتم‌های تقریبی‏، داده‌های نادقیق‏، قطر‏، پوشش واحد</p>
+<p dir='rtl' style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;">‎\‎صفحه‌جدید</p>
+<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:0;"></p></body></html>

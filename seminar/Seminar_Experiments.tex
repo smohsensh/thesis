@@ -1,0 +1,45 @@
+ \section{نتایج پیاده‌سازی}\label{experiments}
+ روش ارائه شده در بخش \ref{proposed} روی سه مجموعه داده‌ی استاندارد در ادبیات یادگیری از صفر یعنی  آوا 
+\LTRfootnote{Animal With Attributs (AwA)}
+\cite{lampert09} 
+، سان
+\LTRfootnote{SUN Attribute} \cite{patterson2014sun}
+ و پاسکال و یاهو  با ویژگی
+\LTRfootnote{Attribute Pascal/Yahoo} \cite{farhadi09}
+   آزمایش شده است. ویژگی‌های این سه مجوعه داده در جدول \ref{data} آمده است. 
+   
+\begin{table}[h]
+ \caption{مشخصات مجموعه دادگان مورد استفاده \label{data}}
+ \begin{center}
+\begin{tabular}{|r|c| c| c| c|}
+\hline
+\rl{مجموعه داده}&\rl{تعداد تصاویر }&\rl{تعداد دسته‌های آموزش}&\rl{تعداد دسته‌های آزمون}&\rl{ابعاد ویژگی}\\ \hline \hline
+\lr{AwA} &\rl{30475}&\rl{40}&\rl{10} &\rl{85}\\ \hline
+\lr{aPascal/Yahoo} &\rl{15339}&\rl{20}&\rl{12}& \rl{64}\\ \hline
+\lr{SUN}& \rl{14340}&\rl{707}&\rl{10} &\rl{102}\\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+نتیجه معیار دقت دسته‌بندی چنددسته‌ای
+\LTRfootnote{Mulit-class accuracy}
+روی این سه مجموعه داده برای روش پیشنهادی و روش‌های پایه در جدول 
+\ref{results}
+آمده است. 
+\begin{table}[h]
+ \caption{
+  نتایج بر اساس معیار دقت دسته‌بندی (درصد)، به صورت میانگین $\pm$ انحراف معیار. 
+  نتایج مربوط به سایر روش‌ها از 
+  \cite{sse}
+  گزارش شده است.
+   \label{results}}
+ \begin{center}
+\begin{tabular}{|r|c| c| c| c|}
+\hline
+\rl{روش }&\lr{AwA}&\lr{aPY}&\lr{SUN}\\ \hline \hline
+IAP \cite{lampert09}& ${44.5 }$& ${38.16}$ & ${82}$\\ \hline
+DAP \cite{lampert09}&\rl{$53.2$}&\rl{$-$}& \rl{72}\\ \hline
+ESZSL \cite{emb15}&\rl{$62.85$}&\rl{$27.3$} &\rl{$65.7$}\\ \hline
+\rl{ پیشنهادی}& \rl{$63.75 \pm 0.67$} &\rl{$39.4 \pm 0.63$} & \rl{$68.4$} \\ \hline
+\end{tabular}
+\end{center}
+\end{table}

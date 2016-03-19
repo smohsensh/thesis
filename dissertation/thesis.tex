@@ -1,0 +1,73 @@
+%--------------------------------------------------------------
+%
+%  LaTeX Thesis Template (v1.6)
+%  By: Hamid Zarrabi-Zadeh, Ehsan Emamjomeh-Zadeh
+%  August 15, 2013
+%
+%--------------------------------------------------------------
+
+
+\documentclass[oneside,a4paper,11pt]{book}
+
+\input{styles/common.tex}
+\input{styles/custom.tex}
+\begin{document}
+
+
+% -------------------- Front Pages --------------------
+
+
+\input{front/info.tex}
+%Uncomment:
+\input{front/template/title.tex}
+
+\input{front/template/besmellah.tex}
+%--------------\input{front/template/signatures.tex}
+%
+%Uncomment:
+\input{front/acknowledgements.tex}
+\input{front/abstract.tex}
+\pagenumbering{Alph}
+
+
+% -------------------- Table of Contents --------------------
+
+
+\pagestyle{fancy}
+
+\tableofcontents \newpage
+\listoffigures \newpage
+%\listoftables \newpage
+
+
+% -------------------- Chapters --------------------
+
+\pagenumbering{arabic}
+\include{chapters/1}
+\include{chapters/2}
+\include{chapters/3}
+\include{chapters/4}
+\include{chapters/5}
+%\include{chapters/6}
+
+
+% -------------------- Bibliography --------------------
+
+
+\input{bibs/bibs.tex}
+
+
+% -------------------- Back Pages --------------------
+
+
+\newgeometry{left=3cm,right=2.5cm}
+
+\input{front/abstract-english.tex}
+%-@@@@@@@@@@@@@@@@@@@@@@2-Uncmment:@@@@@@@@@@@@@@@@@@@@@
+\input{front/info-english.tex}
+\input{front/template/title-english.tex}
+
+
+% -------------------- The End! --------------------
+
+\end{document}

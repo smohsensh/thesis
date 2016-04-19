@@ -79,7 +79,21 @@ List of keywords
 \end{keywords}
 
 \section{Introduction}
-Zero-shot recognition is the task of recognizing instances 
+Zero-shot learning is an extension to the conventional supervised learning scenario
+that introduces the task of recognizing instances from categories with no training sample.
+To describe the task more precisely, in training phase labeled samples from some categories are provided,
+these categories are called seen categories. Also for each category some sort of description is available.
+Description may be human annotated attributes or computed from textual description available online.
+There are also some other categories without labeled instances, these are called unseen categories.
+ In test time, unlabeled instances should be classified into unseen classes.
+ In this setting, zero-shot learning mitigates the problem of acquiring labeled instances, which can be hard for novel, rare and fine grained categories.
+
+ In recent years, advances in deep convoloutional neural networks provides rich visual features with high discrimination capability.
+ Thus there is usually a meaningful structure in visual features domain
+that can be used to help classification be done more precisely like in semi-supervised settings.
+ In the previous works, most concentration has been on finding embeddings for visual features
+ so that they're mapped near their true description and far from descriptions of other classes.
+ little attention has been paid to using embeddings for --------------------------------------------------------------
 
 \subsection{Subsection Title}
 An figure in Fig.~\ref{fig:spiral}
@@ -89,7 +103,7 @@ An figure in Fig.~\ref{fig:spiral}
 \caption{A spiral.}\label{fig:spiral}
 \end{center}
 \end{figure}
- 
+
 An example of citation~\cite{DBLP:conf/acml/2009}.
 
 \acks{Acknowledgements should go at the end, before appendices and references.}

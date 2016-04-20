@@ -110,7 +110,44 @@ that can be used to help classification be done more precisely, like in semi-sup
 We demonstrate this by carrying out extensive experiments on four benchmarks popular for zero-shot recognition.
 
 
-\subsection{Subsection Title}
+
+\section{Related Work}
+Most existing methods for zero-shot object recognition can be described as finding a compatibility function or
+or with more fine-granularity as follows:
+\begin{itemize}
+  \item find (or use existing) embeddings for class labels in a semantic space
+  \item map images into the semantic space
+  \item classify images in the semantic space using nearest neighbors or label propagation
+\end{itemize}
+these steps may be done independently or jointly.
+
+In methods based on attribute prediction \cite{ziad} the semantic space is the space of externally provided attributes so the label embeddings are
+already available and images are embedded in that space using attribute predictors. A relatively large body of work in zero-shot recognition is
+dedicated to attribute prediction, early methods like \cite{lamp} assume independence between attributes and train binary attribute classifiers.
+Probabilistic graphical models have been used to model and/or learn correlations among different attributes \cite{}, to improve the prediction.
+In \cite{jayaraman14}  a random forest approach has been employed that accounts for unreliability in attribute predictions for final class assignment.
+
+Designing label embedding is another line of research that can also be used for zero-shot recognition. For a label embedding to be helpful in classification task,
+it should exhibit two properties \cite{Yu2013}: 1) category-separability 2) Learnability. In \cite{Yu2013} an objective function is defined to derive
+such label embeddings based on information about similarities among categories.
+
+sse , agnostic
+
+More recent works, exploit bilinear mapping to embed images into semantic space and assign a compatibility score to image and label embedding pairs.
+\cite{li15max} defines a max-margin objective function to find the mapping. Authors of \cite{max, semi15} also use a max margin objective function
+while the latter does not fix the label embeddings to externally provided ones in order to obtain more discriminative label embeddings. These two methods
+differ from other existing methods in this way that embeddings and labels for test instances are learned simultaneously. This provides the possibility of
+leveraging unsupervised information in test images for example as done in \cite{semi15} by using a Laplacian regularization term that penalizes
+ similar objects assigned to different classes.
+ An important distinction between these two methods and our works is that we use an explicit clustering on unseen instances and label prediction is done
+ for the whole cluster. This will significantly reduce the number of parameters and simplify the learning algorithm resulting in faster optimization.
+ % and ability to use more discriminative high-dimensional deep features.
+
+ Most similar to out method is \cite{Kodirov2015} which also uses a dictionary learning scheme. Semantic representation of each class is considered as its
+ coding coefficients and 
+  with two new regularization terms, one acting as
+ a domain adaptation
+
 An figure in Fig.~\ref{fig:spiral}
 \begin{figure}[htp]
 \begin{center}
@@ -124,7 +161,7 @@ An example of citation~\cite{DBLP:conf/acml/2009}.
 \acks{Acknowledgements should go at the end, before appendices and references.}
 
 %\bibliographystyle{plain}
-\bibliography{acml16}
+\bibliography{ref}
 
 \appendix
 

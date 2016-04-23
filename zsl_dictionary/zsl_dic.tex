@@ -90,9 +90,7 @@ There are also some other categories without labeled instances, these are called
  In test time, unlabeled instances should be classified into unseen classes.
  %In this setting, zero-shot learning mitigates the problem of acquiring labeled instances, which can be hard for novel, rare and fine grained categories.
 
-Most existing methods for zero-shot learning use 
-so that they're mapped near their true description and far from descriptions of other classes.
-
+Most existing methods for zero-shot learning %TODO %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
  In recent years, advances in deep convoloutional neural networks provides rich visual features with high discrimination capability.
  Thus there is usually a meaningful structure in visual features domain
@@ -123,30 +121,51 @@ these steps may be done independently or jointly.
 
 In methods based on attribute prediction \cite{ziad} the semantic space is the space of externally provided attributes so the label embeddings are
 already available and images are embedded in that space using attribute predictors. A relatively large body of work in zero-shot recognition is
-dedicated to attribute prediction, early methods like \cite{lamp} assume independence between attributes and train binary attribute classifiers.
-Probabilistic graphical models have been used to model and/or learn correlations among different attributes \cite{}, to improve the prediction.
-In \cite{jayaraman14}  a random forest approach has been employed that accounts for unreliability in attribute predictions for final class assignment.
+dedicated to attribute prediction, early methods like \cite{lamplampert09} assume independence between attributes and train binary attribute classifiers.
+Probabilistic graphical models have been used to model and/or learn correlations among different attributes (\cite{}), to improve the prediction.
+In \cite{jayaraman14}  a random forest approach has been employed that accounts for unreliability in attribute predictions
+ for final class assignment.
 
-Designing label embedding is another line of research that can also be used for zero-shot recognition. For a label embedding to be helpful in classification task,
-it should exhibit two properties \cite{Yu2013}: 1) category-separability 2) Learnability. In \cite{Yu2013} an objective function is defined to derive
-such label embeddings based on information about similarities among categories.
+%transfer learning in transductive settings
 
-sse , agnostic
-
-More recent works, exploit bilinear mapping to embed images into semantic space and assign a compatibility score to image and label embedding pairs.
-\cite{li15max} defines a max-margin objective function to find the mapping. Authors of \cite{max, semi15} also use a max margin objective function
+More recent works, exploit bilinear mapping to embed images into semantic space and assign a compatibility score to image and label embedding
+ pairs based on their inner product. Different objective functions have been proposed for learning such bilinear mapping. \cite{emb15}
+ proposed a simple sum of squared error but with better regularization.
+\cite{li15max} define a max-margin objective function similar to structured SVM objective.
+ to find the mapping. Authors of \cite{li15max, semi15} also use a max margin objective function
 while the latter does not fix the label embeddings to externally provided ones in order to obtain more discriminative label embeddings. These two methods
 differ from other existing methods in this way that embeddings and labels for test instances are learned simultaneously. This provides the possibility of
 leveraging unsupervised information in test images for example as done in \cite{semi15} by using a Laplacian regularization term that penalizes
  similar objects assigned to different classes.
- An important distinction between these two methods and our works is that we use an explicit clustering on unseen instances and label prediction is done
- for the whole cluster. This will significantly reduce the number of parameters and simplify the learning algorithm resulting in faster optimization.
+ An important distinction between these two methods and our works is that we use an explicit clustering on unseen instances
+ and label prediction is done for the whole cluster. This will significantly reduce the number of parameters
+ and simplify the learning algorithm resulting in faster optimization.
  % and ability to use more discriminative high-dimensional deep features.
 
- Most similar to out method is \cite{Kodirov2015} which also uses a dictionary learning scheme. Semantic representation of each class is considered as its
- coding coefficients and 
-  with two new regularization terms, one acting as
- a domain adaptation
+ In absence of human annotated attributes, text from online encyclopedias or just the name of the class is used. Some existing method
+ first do a feature extraction on these auxiliary information turning them to vectors that can be treated analogous to attribute vectors.
+ \cite{devise} use a bilinear mapping as compatibility function among deep visual features and Word2vec \cite{word2vec} representation of
+ class names. \cite{ba2015} uses a nonlinear mapping defined by a neural network to model compatibility. \cite{mohamed13} combines regression with knowledge transfer and proposes an objective to predict classifier parameters
+ for unseen categories .
+
+ Designing label embedding is another line of research that can also be used for zero-shot recognition. For a label embedding to be helpful in classification task,
+ it should exhibit two properties \cite{Yu2013}: 1) category-separability 2) Learnability. In \cite{Yu2013} an objective function is defined to derive
+ such label embeddings based on information about similarities among categories.
+
+A relatively popular embedding for labels is the to describe unseen categories as how similar they are to seen ones.
+\cite{costa} construct  classifier for an unseen category by linear combination of seen class classifiers
+using this kind of representation as mixing weights. \cite{convex} use output from softmax layer of a CNN to get the similarity scores.
+Using these as weights they represent images in the semantic space as convex combination of seen label embeddings.
+\cite{sse} also uses histogram of seen class proportions as label embedding and then define a max margin framework to embed images
+ in this space. The authors extend their work further \cite{agnostic} and formulate a supervised dictionary learning
+ for learning embeddings jointly.
+
+
+There are major differences between our work and  ~\cite{Kodirov2015} which also uses a dictionary learning scheme in which coding coefficients is considered to be
+ label embeddings in semantic space. In that work a sparse coding objective with two regularization terms designed specifically for
+ zero-shot learning are used to map images into semantic space and class labels are assigned to them using label propagation. We use
+ the standard sparse coding objective and use the dictionary learned to map unseen class signatures to visual feature space and then
+ use them to assign labels to pre-computed cluster centers.
 
 An figure in Fig.~\ref{fig:spiral}
 \begin{figure}[htp]

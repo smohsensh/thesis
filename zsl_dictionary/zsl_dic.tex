@@ -83,32 +83,38 @@ Zero-shot learning is an extension to the conventional supervised learning scena
 that introduces task of recognizing instances from categories with no training sample.
  The problem addressed by zero-shot learning, rises naturally in practice wherever acquiring ample labeled instances
  is not feasible for all categories. Examples include large-scale and fine-grained classification.
-To describe the task more precisely, in training phase labeled samples from some categories are provided,
-these categories are called seen categories. Also for each category some sort of description is available.
-Description may be human annotated attributes or derived from textual description available online.
-There are also some other categories without labeled instances, these are called unseen categories.
- In test time, unlabeled instances should be classified into unseen classes.
+Describing the task more precisely, in training phase labeled samples from some categories are provided,
+these categories are called seen categories. There are also some other categories without labeled instances, these are called unseen categories.
+There also exists some sort of description for every category that are sometimes called \textit{class signatures}.
+Signatures may be a set of human-annotated discriminative attributes or derived from textual description available online.
+In the test phase unlabeled instances should be classified into seen or unseen categories. In this work, however we focus on the more popular version
+in which test instances belong only to unseen categories.
  %In this setting, zero-shot learning mitigates the problem of acquiring labeled instances, which can be hard for novel, rare and fine grained categories.
 
-Most existing methods for zero-shot learning %TODO %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Most existing methods for zero-shot learning focus on using labeled images to learn a compatibility function indicating how similar an image is
+to each label embedding. Each instance will then be labeled with the category having the most compatible signature. Little attention
+has been paid to exploiting the information available in the distribution of images themselves.
 
  In recent years, advances in deep convoloutional neural networks provides rich visual features with high discrimination capability.
  Thus there is usually a meaningful structure in visual features domain
-that can be used to help classification be done more precisely, like in semi-supervised settings.
- In the previous works, most concentration has been on finding embeddings for visual features and little effort has been made to exploit unsupervised information in images domain.
+that can be used to help classification be done more precisely, like in semi-supervised settings. We will show through experiment that
+the space of images is indeed a rich space in which instances categories form natural clusters.
+ %In the previous works, most concentration has been on finding embeddings for visual features and little effort has been made to exploit unsupervised information in images domain.
 
  In this work
  %we first justify the claim made above by applying a simple clustering algorithm and reporting
 %Rand Index measure between cluster assignments and ground truth labels. Motivated by the result,
- we propose a
+ we first propose a
   semi-supervised clustering algorithm to leverage labels available for seen classes to obtain more accurate cluster assignments.
  Then we use a simple dictionary learning method to map class descriptions to visual features, creating a set of landmarks in
  visual domain. These landmarks are used to label cluster centers driven from clustering algorithm. We argue that this learning
  scheme can mitigate domain shift problem \cite{eccv14} between seen and unseen categories and thus achieving higher classification accuracy.
-We demonstrate this by carrying out extensive experiments on four benchmarks popular for zero-shot recognition.
+In Sec. \ref{experiments} we present experimental results on four popular zero-shot classification benchmarks to see
+the method above outperforms the state of the art on three of them.
+ We extend our work further and propose a framework to learn the dictionary and cluster (class label) assignments jointly
+ improving results obtained from our first method.
 
-
-
+The rest of paper is organized as follow...
 \section{Related Work}
 Most existing methods for zero-shot object recognition can be described as finding a compatibility function or
 or with more fine-granularity as follows:
@@ -166,6 +172,20 @@ There are major differences between our work and  ~\cite{Kodirov2015} which also
  zero-shot learning are used to map images into semantic space and class labels are assigned to them using label propagation. We use
  the standard sparse coding objective and use the dictionary learned to map unseen class signatures to visual feature space and then
  use them to assign labels to pre-computed cluster centers.
+
+\section{Proposed Approach [Or a name maybe :-?]}
+In this section we first ...
+
+\subsection{An Observation about Data Distribution}
+In this section we run a simple experiment on public zero-shot classification benchmarks to justify our
+postulate about distribution of data exhibiting rich clustering property. To this end we run k-means clustering
+algorithm on test instances with number of clusters varying between number of unseen instances and double of that.
+We report rand index score of cluster assignments attained comparing to ground truth labels.
+To make the results more telling we conduct another experiment. We split instances form unseen categories
+to a 90\%-10\% split train SVMs with RBF kernel on the first split. Classification accuracy on the second split is reported in table \ref{tab}.
+It can be seen that blah blah.%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+\subsection{Notation}
 
 An figure in Fig.~\ref{fig:spiral}
 \begin{figure}[htp]

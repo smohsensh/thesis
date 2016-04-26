@@ -1,6 +1,7 @@
 %\documentclass[wcp,gray]{jmlr} % test grayscale version
 \documentclass[wcp]{jmlr}
 
+\usepackage{dsfont}
 % The following packages will be automatically loaded:
 % amsmath, amssymb, natbib, graphicx, url, algorithm2e
 
@@ -66,7 +67,10 @@
  }
 
 %\editors{List of editors' names}
-
+\newcommand{\norm}[1]{\left \lVert #1 \right \rVert_{F}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\minimize}{minimize}
 \begin{document}
 
 \maketitle
@@ -176,16 +180,78 @@ There are major differences between our work and  ~\cite{Kodirov2015} which also
 \section{Proposed Approach [Or a name maybe :-?]}
 In this section we first ...
 
-\subsection{An Observation about Data Distribution}
+\subsection{An Observation about Data Distribution} \label{observation}
 In this section we run a simple experiment on public zero-shot classification benchmarks to justify our
 postulate about distribution of data exhibiting rich clustering property. To this end we run k-means clustering
 algorithm on test instances with number of clusters varying between number of unseen instances and double of that.
 We report rand index score of cluster assignments attained comparing to ground truth labels.
 To make the results more telling we conduct another experiment. We split instances form unseen categories
-to a 90\%-10\% split train SVMs with RBF kernel on the first split. Classification accuracy on the second split is reported in table \ref{tab}.
+to a random 90\%-10\% split train SVMs with RBF kernel on the first split. Classification accuracy on the second split is reported in table \ref{tab}.
 It can be seen that blah blah.%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 \subsection{Notation}
+$X, \mathbf{x}, x$ denote matrices, column vectors and scalars respectively. $\norm{X}$ denotes the Frobnious norm of a matrix.
+Suppose there are $n_s$ seen categories and $n_u$ unseen categories. For each category y,
+auxiliary information $a_y \in \mathcal{R}^r$ is available. We assume that labels $\{1, \ldots, n_s \}$
+correspond to seen categories.
+
+We use $X_s \in \mathbb{R}^{d \times N_s}$ and $X_u \in \mathbb{R}^{d \times N_u}$
+to denote matrices whose columns are seen and unseen images respectively where $d$ is the dimension of image features.
+$S_s = [a_1, \ldots, a_{n_s}]$ denotes the matrix of seen class signatures. $S_u$ is defined similarly. $Y_s$
+denotes train data labels in one hot encoding format.
+
+\subsection{Clustering Method}
+Our first method can be roughly summarized in three steps:
+\begin{enumerate}
+  \item Using data from seen classes we learn a linear mapping from  attribute vectors to images like in \cite{Kodirov2015}
+  \item We cluster data using our proposed clustering algorithm
+  \item We then label each cluster with the label whose representation in images space is nearest to cluster center.
+\end{enumerate}
+ Although the method above outperforms the state of the art on most zero-shot recognition benchmark,
+its performance is bottlenecked with clustering accuracy, Because all members of each cluster is assumed to
+share the same label. To overcome this bottleneck, in the next section we
+present a joint frame work to learn cluster assignments jointly with the mapping.
+
+We use a simple ridge regression to map class signatures to visual features. This method, though simple,
+will serve well in our method. The mapping should map a single class signature to various images and is penalized
+for distance from each one, so it is learned in a way that does good \textit{on average}. This is ***ly
+favorable in our setting where we want to use this mapping to classify cluster centers that also
+approximate \textit{average} of class instances.
+
+The mapping is characterized by the following equation
+\begin{equation}
+  D = \argmin_D \norm{X_s - D Y_s} + \gamma \norm{D}
+\end{equation}
+where columns of $ Y_s \in \mathcal{R}^{r \times n_s} $  are class signatures of images in columns of $X_s$.
+This equation is known to have closed form solution:
+\begin{equation} \label{eq:dic}
+  D = X_s Y_s^T (Y_s Y_s^T + \gamma I)^{-1}
+\end{equation}.
+The parameter $\gamma$ is determined through cross validation of reconstruction loss. We found out through experiment that
+this will do almost as good as the more sophisticated
+ cross validation on final classification accuracy in which some seen categories are considered are omitted
+ from train data to act as validation classes.
+
+The clustering problem here is different from conventional semi-supervised clustering tasks \cite{}
+in this way that unlabeled instances are completely disjoint from labeled ones. Here we propose an objective function which
+can be seen as an extension to k-means and captures the special nature of clustering we need.
+\begin{equation}
+\minimize_{R, \mathbf{\mu_1, \ldots \mu_k }}  \sum_{n,k} r_{nk} \lVert \mathbf{x_n - \mu_k} \rVert +
+ \beta \sum_{n=1}^{N_s} \mathds{1}(\mathbf{r_n \neq y_n})
+\end{equation}
+
+For each labeled instance there is a penalty of $\beta$ if its assigned cluster number is different from its label thus encouraging
+the first $n_s$ cluster be same as seen classes. This is intuitively plausible, on one hand all data is being used
+in the clustering and on the other ????????
+
+Parameters $\beta$ and $k$ can be determined through cross validation, however in our experiments we found out
+the model not to be very sensitive to these parameters so we fix $\beta=1$ and $k =  (n_s + n_u)$ i.e. number of categories.
+
+Finally to assign labels to test instances we map test class signatures to image space using the mapping $D$
+from \mathref{}
+
+
+
 
 An figure in Fig.~\ref{fig:spiral}
 \begin{figure}[htp]

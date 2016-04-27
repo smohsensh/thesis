@@ -247,11 +247,23 @@ in the clustering and on the other ????????
 Parameters $\beta$ and $k$ can be determined through cross validation, however in our experiments we found out
 the model not to be very sensitive to these parameters so we fix $\beta=1$ and $k =  (n_s + n_u)$ i.e. number of categories.
 
-Finally to assign labels to test instances we map test class signatures to image space using the mapping $D$
-from \mathref{}
+Finally to assign labels to test instances, we use the mapping $D$ from \mathref{eq:dic} to map class signatures to visual
+features, creating a set of \textit{landmarks} in the images space. We then classify just the cluster centers using a
+nearest neighbor classifier. All of instances in classifier follow up the label predicted for the cluster center.
 
+We argue that the this method of assigning labels to clusters rather than individual instances can mitigate the
+domain shift problem in zero-shot learning.
+............
 
-
+\section{Joint mapping and clustering}
+In the method we presented earlier, once the the points are assigned to a cluster,
+they all will inevitably share an identical label. This can limit the performance of the method. One
+example happen arises for cluster \textit{outliers} that are distant from center of their cluster but lie
+nearby a landmark. This instances most probably belong to the class of nearby landmark but will be labeled same
+as their cluster center. To overcome this issue we propose a framework to learn the mapping jointly with cluster assignments
+ (which will be reported as label predictions at the end).
+ While allowing more flexibility, this framework abates the domain shift problem in the same way as the previous method.
+ The objective function is defined as follow
 
 An figure in Fig.~\ref{fig:spiral}
 \begin{figure}[htp]

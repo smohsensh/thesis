@@ -264,15 +264,31 @@ as their cluster center. To overcome this issue we propose a framework to learn 
  (which will be reported as label predictions at the end).
  While allowing more flexibility, this framework abates the domain shift problem in the same way as the previous method.
  The objective function is formulated as follows:
- \begin{equation}
-   \minimize_{R,D} \norm{X_s - D Y_s}  + \lambda \norm{X_t - D S_t R^T } + \gamma \norm{D}
- \end{equation}
+ \begin{align} \label{eq:main}
+   \minimize_{R,D} \norm{X_s - D Y_s}  + \lambda \norm{X_t - D S_t R^T } + \gamma \norm{D} //
+   s.t. \in \{0,1\}^{N_u \times n_u}
+ \end{align}
  The second term in the objective penalizes tries to learn mapping $D$ and cluster assignments minimizing the
  distance between test instances and representation of their class signatures mapped by $D$. By enforcing
  the signatures to be mapped close to test instances this term mitigates the domain shift problem.
  The second term is essentially a clustering objective but with two advantages. First the number of clusters is no longer a
  parameter, it is determined by the number of unseen classes. Second, the cluster centers are bound to be
  mapping of test class signatures and the mapping also appears in the other terms.
+
+\subsection{Optimization}
+The \eqref{eq:main} is not convex and considering that $R$ is a partionaning the global optimization requires an 
+exhustive search over all possible labeling of test data with $n_u$ labels. So we use a simple coordinate descent 
+method like in k-means. We alternate between optimization $R$ or $D$ while fixing the other. 
+Having fixed the labeling $R$, the problem becomes a simple multi-task ridge regression which has the closed form soloution:
+\begin{equation}
+  D = .
+\end{equation}
+Fixing $D$ the optimal $R$ can be achieved by assigning each instance to the closest landmark
+eq r_ij = argmin
+
+We rely on good initialization to evade poor local minima.
+To initialze $D$ we use
+\eqref{dic} and $R$ is initialized with final preditions from our first method. 
 
 
 An figure in Fig.~\ref{fig:spiral}

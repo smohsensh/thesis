@@ -263,7 +263,17 @@ nearby a landmark. This instances most probably belong to the class of nearby la
 as their cluster center. To overcome this issue we propose a framework to learn the mapping jointly with cluster assignments
  (which will be reported as label predictions at the end).
  While allowing more flexibility, this framework abates the domain shift problem in the same way as the previous method.
- The objective function is defined as follow
+ The objective function is formulated as follows:
+ \begin{equation}
+   \minimize_{R,D} \norm{X_s - D Y_s}  + \lambda \norm{X_t - D S_t R^T } + \gamma \norm{D}
+ \end{equation}
+ The second term in the objective penalizes tries to learn mapping $D$ and cluster assignments minimizing the
+ distance between test instances and representation of their class signatures mapped by $D$. By enforcing
+ the signatures to be mapped close to test instances this term mitigates the domain shift problem.
+ The second term is essentially a clustering objective but with two advantages. First the number of clusters is no longer a
+ parameter, it is determined by the number of unseen classes. Second, the cluster centers are bound to be
+ mapping of test class signatures and the mapping also appears in the other terms.
+
 
 An figure in Fig.~\ref{fig:spiral}
 \begin{figure}[htp]

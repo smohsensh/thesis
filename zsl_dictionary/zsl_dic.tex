@@ -120,19 +120,20 @@ the method above outperforms the state of the art on three of them.
 
 The rest of paper is organized as follow...
 \section{Related Work}
-Most existing methods for zero-shot object recognition can be described as finding a compatibility function or
+Most existing methods for zero-shot object recognition can be described as finding a compatibility function scoring how
+similar an image and a description are.
 or with more fine-granularity as follows:
 \begin{itemize}
-  \item find (or use existing) embeddings for class labels in a semantic space
-  \item map images into the semantic space
-  \item classify images in the semantic space using nearest neighbors or label propagation
+  \item Find (or use existing) embeddings for class labels in a semantic space.
+  \item Map images into that semantic space.
+  \item Classify images in the semantic space (usually using a nearest neighbor classifier or label propagation).
 \end{itemize}
 these steps may be done independently or jointly.
-
-In methods based on attribute prediction \cite{ziad} the semantic space is the space of externally provided attributes so the label embeddings are
-already available and images are embedded in that space using attribute predictors. A relatively large body of work in zero-shot recognition is
-dedicated to attribute prediction, early methods like \cite{lamplampert09} assume independence between attributes and train binary attribute classifiers.
-Probabilistic graphical models have been used to model and/or learn correlations among different attributes (\cite{}), to improve the prediction.
+A notable body of work in zero-shot recognition belongs to attribute prediction  \cite{lampert09, topicmodel, ajoint11, unified13, suzuki14}.
+In these methods, the semantic label embeddings are considered to be externally provided attributes. So label embeddings are
+already available and the task is to map images to the semantic space i.e. predicting attributes.
+Early methods like \cite{lampert09} assume independence between attributes and train binary attribute classifiers.
+Probabilistic graphical models have been utilized to model and/or learn correlations among different attributes \cite{topicmodel, unified13}, to improve the prediction.
 In \cite{jayaraman14}  a random forest approach has been employed that accounts for unreliability in attribute predictions
  for final class assignment.
 
@@ -155,7 +156,8 @@ leveraging unsupervised information in test images for example as done in \cite{
  In absence of human annotated attributes, text from online encyclopedias or just the name of the class is used. Some existing method
  first do a feature extraction on these auxiliary information turning them to vectors that can be treated analogous to attribute vectors.
  \cite{devise} use a bilinear mapping as compatibility function among deep visual features and Word2vec \cite{word2vec} representation of
- class names. \cite{ba2015} uses a nonlinear mapping defined by a neural network to model compatibility. \cite{mohamed13} combines regression with knowledge transfer and proposes an objective to predict classifier parameters
+ class names. \cite{ba2015} uses a nonlinear mapping defined by a neural network to model compatibility.
+  \cite{mohamed13} combines regression with knowledge transfer and proposes an objective to predict classifier parameters
  for unseen categories .
 
  Designing label embedding is another line of research that can also be used for zero-shot recognition. For a label embedding to be helpful in classification task,
@@ -182,7 +184,8 @@ In this section we first ...
 
 
 \subsection{Notation}
-$X, \mathbf{x}, x$ denote matrices, column vectors and scalars respectively. $\norm{X}$ denotes the Frobnious norm of a matrix.
+$X, \mathbf{x}, x$ denote matrices, column vectors and scalars respectively. $\norm{X}$ denotes the Frobenius norm of a matrix and
+$X_{(i)}$ denotes its $i$th column.
 Suppose there are $n_s$ seen categories and $n_u$ unseen categories. For each category y,
 auxiliary information $a_y \in \mathcal{R}^r$ is available. We assume that labels $\{1, \ldots, n_s \}$
 correspond to seen categories.
@@ -257,7 +260,7 @@ as their cluster center. To overcome this issue we propose a framework to learn 
  While allowing more flexibility, this framework abates the domain shift problem in the same way as the previous method.
  The objective function is formulated as follows:
  \begin{align} \label{eq:main}
-   \minimize_{R,D} \norm{X_s - D Y_s}  + \lambda \norm{X_t - D S_t R^T } + \gamma \norm{D} //
+   \minimize_{R,D} \norm{X_s - D Y_s}  + \lambda \norm{X_t - D S_t R^T } + \gamma \norm{D} \\
    s.t. \in \{0,1\}^{N_u \times n_u}
  \end{align}
  The second term in the objective penalizes tries to learn mapping $D$ and cluster assignments minimizing the
@@ -279,6 +282,8 @@ Fixing $D$ the optimal $R$ can be achieved by assigning each instance to the clo
 \begin{equation} \label{eq:r_update}
   r_{ij} = \mathds{1}[j = \argmin_{k} \lVert X_{u(i)} - D S_{u(k)} \rVert_2 ]
 \end{equation}
+We continue alternating between updates of $D$ and $R$ till R remains constants i.e. no instance changes label. In our experiments this always happens
+in less that 15 iterations.
 
 We rely on good initialization to evade poor local minima.
 To initialize $D$ we use
@@ -303,9 +308,9 @@ as in \cite{jayaraman14} where 10 classes have been considered unseen.
 birds each image annotated with 312 binary attributes, again we average over instances to get continuous class signatures.
 We use the same train/test split as in \cite{akata13} to make comparison.
 
-To adjust parameters $\gamma$ and $\beta$ in Eq.~\ref{eq:d_update}, we split training data into two train and validation sets.
-We choose a number of categories randomly from training data as validation categories. For each data set size of
-validation set has the same ratio to train set as size of test categories to all of train and validation size.
+To adjust parameters $\gamma$ and $\beta$ in Eq.~\ref{eq:d_update}, we split training data into train and validation sets.
+We choose a number of categories randomly from training data as validation categories. For each data set, the size of
+validation set has the same ratio to train set as the size of test categories to total of train and validation.
 Once optimal $\gamma$ and $\beta$ are determined through grid search by testing on validation set, The model
 is then trained on all seen categories.
 

@@ -180,14 +180,6 @@ There are major differences between our work and  ~\cite{Kodirov2015} which also
 \section{Proposed Approach [Or a name maybe :-?]}
 In this section we first ...
 
-\subsection{An Observation about Data Distribution} \label{observation}
-In this section we run a simple experiment on public zero-shot classification benchmarks to justify our
-postulate about distribution of data exhibiting rich clustering property. To this end we run k-means clustering
-algorithm on test instances with number of clusters varying between number of unseen instances and double of that.
-We report rand index score of cluster assignments attained comparing to ground truth labels.
-To make the results more telling we conduct another experiment. We split instances form unseen categories
-to a random 90\%-10\% split train SVMs with RBF kernel on the first split. Classification accuracy on the second split is reported in table \ref{tab}.
-It can be seen that blah blah.%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 \subsection{Notation}
 $X, \mathbf{x}, x$ denote matrices, column vectors and scalars respectively. $\norm{X}$ denotes the Frobnious norm of a matrix.
@@ -247,7 +239,7 @@ in the clustering and on the other ????????
 Parameters $\beta$ and $k$ can be determined through cross validation, however in our experiments we found out
 the model not to be very sensitive to these parameters so we fix $\beta=1$ and $k =  (n_s + n_u)$ i.e. number of categories.
 
-Finally to assign labels to test instances, we use the mapping $D$ from \mathref{eq:dic} to map class signatures to visual
+Finally to assign labels to test instances, we use the mapping $D$ from \eqref{eq:dic} to map class signatures to visual
 features, creating a set of \textit{landmarks} in the images space. We then classify just the cluster centers using a
 nearest neighbor classifier. All of instances in classifier follow up the label predicted for the cluster center.
 
@@ -276,30 +268,57 @@ as their cluster center. To overcome this issue we propose a framework to learn 
  mapping of test class signatures and the mapping also appears in the other terms.
 
 \subsection{Optimization}
-The \eqref{eq:main} is not convex and considering that $R$ is a partionaning the global optimization requires an 
-exhustive search over all possible labeling of test data with $n_u$ labels. So we use a simple coordinate descent 
-method like in k-means. We alternate between optimization $R$ or $D$ while fixing the other. 
-Having fixed the labeling $R$, the problem becomes a simple multi-task ridge regression which has the closed form soloution:
-\begin{equation}
-  D = .
+The \eqref{eq:main} is not convex and considering that $R$ is a partitioning the global optimization requires an
+exhaustive search over all possible labeling of test data with $n_u$ labels. So we use a simple coordinate descent
+method like in k-means. We alternate between optimization $R$ or $D$ while fixing the other.
+Having fixed the labeling $R$, the problem becomes a simple multi-task ridge regression which has the closed form solution:
+\begin{equation} \label{eq:d_update}
+  D = (X_s Y_s^T + \beta X_u R S_u^T) (Y_s Y_s^T + \beta S_u R^T R S_u^T  + \gamma I)^{-1}
 \end{equation}
 Fixing $D$ the optimal $R$ can be achieved by assigning each instance to the closest landmark
-eq r_ij = argmin
+\begin{equation} \label{eq:r_update}
+  r_{ij} = \mathds{1}[j = \argmin_{k} \lVert X_{u(i)} - D S_{u(k)} \rVert_2 ]
+\end{equation}
 
 We rely on good initialization to evade poor local minima.
-To initialze $D$ we use
-\eqref{dic} and $R$ is initialized with final preditions from our first method. 
+To initialize $D$ we use
+\eqref{eq:dic} and $R$ is initialized with final perditions from our first method.
 
 
-An figure in Fig.~\ref{fig:spiral}
-\begin{figure}[htp]
-\begin{center}
-\includegraphics[width=0.5\textwidth]{../images/logo.pdf}
-\caption{A spiral.}\label{fig:spiral}
-\end{center}
-\end{figure}
+\section{Experiments}
+\textbf{Data Sets.}
+We evaluate our proposed methods on four popular public benchmarks for zero-shot classification.
+For all datasets we use $4096-$dimensional features from first fully connected layer of VGG19 network \cite{vgg}
+provided publicly as supplementary material of \cite{sse}.
+(1) Animal with Attributes (AwA) \cite{lampert09}. There are images of 50 mammal species in this data set
+each class described by a single $85-$dimensional attribute vector. We use the continuous attributes rather than
+the binary version as it yield better results. The train/test split provided by the dataset is used.
+(2) aPascal/aYahoo \cite{farhadi09}. The 20 categories from Pascal VOC 2008 \cite{pascal} are considered seen classes and
+categories from aYhoo are considered unseen. As this dataset provides instance level attribute vectors,
+for class signatures we use the average of instance attributes.
+(3) SUN Attribute \cite{sun}. The dataset consists of 717 categories and all images are annotated with 102 attributes, we just
+use the average attributes among all instances of each categories for our experiments here. We use the same train/test spilit
+as in \cite{jayaraman14} where 10 classes have been considered unseen.
+(4) Caltech UCSD Birds-2011 (CUB) \cite{cub}. This a dataset for fine-grained classification task. There are 200 species of
+birds each image annotated with 312 binary attributes, again we average over instances to get continuous class signatures.
+We use the same train/test split as in \cite{akata13} to make comparison.
 
-An example of citation~\cite{DBLP:conf/acml/2009}.
+To adjust parameters $\gamma$ and $\beta$ in Eq.~\ref{eq:d_update}, we split training data into two train and validation sets.
+We choose a number of categories randomly from training data as validation categories. For each data set size of
+validation set has the same ratio to train set as size of test categories to all of train and validation size.
+Once optimal $\gamma$ and $\beta$ are determined through grid search by testing on validation set, The model
+is then trained on all seen categories.
+
+%
+% An figure in Fig.~\ref{fig:spiral}
+% \begin{figure}[htp]
+% \begin{center}
+% \includegraphics[width=0.5\textwidth]{../images/logo.pdf}
+% \caption{A spiral.}\label{fig:spiral}
+% \end{center}
+% \end{figure}
+%
+% An example of citation~\cite{DBLP:conf/acml/2009}.
 
 \acks{Acknowledgements should go at the end, before appendices and references.}
 
@@ -308,9 +327,14 @@ An example of citation~\cite{DBLP:conf/acml/2009}.
 
 \appendix
 
-\section{First Appendix}\label{apd:first}
-
-This is the first appendix.
+\section{An Observation about Data Distribution}\label{observation}
+In this section we run a simple experiment on public zero-shot classification benchmarks to justify our
+postulate about distribution of data exhibiting rich clustering property. To this end we run k-means clustering
+algorithm on test instances with number of clusters varying between number of unseen instances and double of that.
+We report rand index score of cluster assignments attained comparing to ground truth labels.
+To make the results more telling we conduct another experiment. We split instances form unseen categories
+to a random 90\%-10\% split train SVMs with RBF kernel on the first split. Classification accuracy on the second split is reported in table \ref{tab}.
+It can be seen that blah blah.%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 \section{Second Appendix}\label{apd:second}
 

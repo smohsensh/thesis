@@ -306,13 +306,29 @@ use the average attributes among all instances of each categories for our experi
 as in \cite{jayaraman14} where 10 classes have been considered unseen.
 (4) Caltech UCSD Birds-2011 (CUB) \cite{cub}. This a dataset for fine-grained classification task. There are 200 species of
 birds each image annotated with 312 binary attributes, again we average over instances to get continuous class signatures.
-We use the same train/test split as in \cite{akata13} to make comparison.
+We use the same train/test split as in \cite{akata13} (and many other following works) to make comparison possible.
 
 To adjust parameters $\gamma$ and $\beta$ in Eq.~\ref{eq:d_update}, we split training data into train and validation sets.
 We choose a number of categories randomly from training data as validation categories. For each data set, the size of
 validation set has the same ratio to train set as the size of test categories to total of train and validation.
 Once optimal $\gamma$ and $\beta$ are determined through grid search by testing on validation set, The model
 is then trained on all seen categories.
+
+We summarize our experimental results in \ref{tab:results}. For other methods we use the results reported in the original publication.
+We did not re-implement any of the methods and if the original paper does not report on a data set we leave the corresponding cell blank.
+Our method performs best on 3 out of 4 datasets except for aPascal/aYahoo. This can be explained by the nature of the dataset
+in which class signatures obtained by averaging instance attributes are very similar. We suppose trying to learn
+more discriminative signatures from data can potentially improve the result. We investigate this in our future work.
+
+We implemented our method using Numpy \cite{} in Python
+\footnote{Code is available at :-?}
+ and used an Intel Core i5 CPU at 3.2 GHz to run the experiments.
+On all datasets in takes less than 10minutes from loading data to yielding predictions.
+
+\section{Conclusion}
+
+
+
 
 %
 % An figure in Fig.~\ref{fig:spiral}
@@ -339,7 +355,7 @@ algorithm on test instances with number of clusters varying between number of un
 We report rand index score of cluster assignments attained comparing to ground truth labels.
 To make the results more telling we conduct another experiment. We split instances form unseen categories
 to a random 90\%-10\% split train SVMs with RBF kernel on the first split. Classification accuracy on the second split is reported in table \ref{tab}.
-It can be seen that blah blah.%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+It can be seen that blah blah.%TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 \section{Second Appendix}\label{apd:second}
 

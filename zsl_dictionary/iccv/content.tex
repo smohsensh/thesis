@@ -1,91 +1,19 @@
-%\documentclass[wcp,gray]{jmlr} % test grayscale version
-\documentclass[wcp]{jmlr}
-
-\usepackage{dsfont}
-% The following packages will be automatically loaded:
-% amsmath, amssymb, natbib, graphicx, url, algorithm2e
-
-%\usepackage{rotating}% for sideways figures and tables
-\usepackage{longtable}% for long tables
-
-% The booktabs package is used by this sample document
-% (it provides \toprule, \midrule and \bottomrule).
-% Remove the next line if you don't require it.
-\usepackage{booktabs}
-% The siunitx package is used by this sample document
-% to align numbers in a column by their decimal point.
-% Remove the next line if you don't require it.
-%\usepackage[load-configurations=version-1]{siunitx} % newer version
-%\usepackage{siunitx}
-%\usepackage{natbib}
-
-% The following command is just for this sample document:
-\newcommand{\cs}[1]{\texttt{\char`\\#1}}
-
-\jmlrvolume{60}
-\jmlryear{2016}
-\jmlrworkshop{ACML 2016}
-
-\title[Short Title]{Full Title of Article}
-
- % Use \Name{Author Name} to specify the name.
- % If the surname contains spaces, enclose the surname
- % in braces, e.g. \Name{John {Smith Jones}} similarly
- % if the name has a "von" part, e.g \Name{Jane {de Winter}}.
- % If the first letter in the forenames is a diacritic
- % enclose the diacritic in braces, e.g. \Name{{\'E}louise Smith}
-
- % Two authors with the same address
- % \author{\Name{Author Name1} \Email{abc@sample.com}\and
- %  \Name{Author Name2} \Email{xyz@sample.com}\\
- %  \addr Address}
-
- % Three or more authors with the same address:
- % \author{\Name{Author Name1} \Email{an1@sample.com}\\
- %  \Name{Author Name2} \Email{an2@sample.com}\\
- %  \Name{Author Name3} \Email{an3@sample.com}\\
- %  \Name{Author Name4} \Email{an4@sample.com}\\
- %  \Name{Author Name5} \Email{an5@sample.com}\\
- %  \Name{Author Name6} \Email{an6@sample.com}\\
- %  \Name{Author Name7} \Email{an7@sample.com}\\
- %  \Name{Author Name8} \Email{an8@sample.com}\\
- %  \Name{Author Name9} \Email{an9@sample.com}\\
- %  \Name{Author Name10} \Email{an10@sample.com}\\
- %  \Name{Author Name11} \Email{an11@sample.com}\\
- %  \Name{Author Name12} \Email{an12@sample.com}\\
- %  \Name{Author Name13} \Email{an13@sample.com}\\
- %  \Name{Author Name14} \Email{an14@sample.com}\\
- %  \addr Address}
-
-
- % Authors with different addresses:
-  \author{\Name{Author Name1} \Email{abc@sample.com}\\
-  \addr Address 1
-  \AND
-  \Name{Author Name2} \Email{xyz@sample.com}\\
-  \addr Address 2
- }
-
-%\editors{List of editors' names}
-\newcommand{\norm}[1]{\left \lVert #1 \right \rVert_{F}^2}
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
-\DeclareMathOperator*{\minimize}{minimize}
-\begin{document}
-
-\maketitle
 
 \begin{abstract}
-This is the abstract for this article.
+One line of research to perform object recognition when labeled data is not available for all categories, is zero-shot learning,
+in which a form of auxiliary information describing categories to help the recognition task.
+In this paper we propose a semi-supervised framework, which is essentially a clustering problem over unseen instances. We further
+use a linear mapping inspired by dictionary learning to represent the auxiliary information as visual features, making label prediction
+possible using nearest neighbor. The clustering term is effective in exploiting the information provided by rich deep visual features and
+mitigating the domain shift problem known to impair zero-shot recognition performance. We demonstrate this through extensive
+experiments on four public benchmark which results improving state of the art prediction accuracy on three of them.
 \end{abstract}
-\begin{keywords}
-List of keywords
-\end{keywords}
+
 
 \section{Introduction}
 Zero-shot learning is an extension to the conventional supervised learning scenario.
 It introduces task of recognizing instances from categories with no training sample.
- The problem addressed by zero-shot learning rises naturally in practice wherever it is not feasible to aquire abundant labeled instances
+ The problem addressed by zero-shot learning rises naturally in practice wherever it is not feasible to acquire abundant labeled instances
  for all categories. Examples include large-scale and fine-grained classification.
 Describing the task more precisely, in training phase labeled samples from some categories are provided,
 these categories are called seen categories. There are also some other categories without labeled instances; these are called unseen categories.
@@ -117,8 +45,11 @@ the method above outperforms the state of the art on three of them.
  We extend our work further and propose a framework to learn the dictionary and cluster (class label) assignments jointly
  improving results obtained from our first method.
 
-The rest of paper is organized as follow...
-\section{Related Work}
+The rest of paper is organized as follow. In Sec.\ref{related} we review existing methods for zero-shot recognition.
+In Sec.\ref{proposed} we present our first method consisting of a semi-supervised clustering algorithm and a way to label cluster, In Sec.\ref{joint} we
+we define our framework for performing clustering and prediction jointly, In Sec.\ref{experiments} we report our experiments and in Sec.\ref{conclusion}
+we conclude.
+\section{Related Work} \label{related}
 Most existing methods for zero-shot object recognition can be described as finding a compatibility function scoring how
 similar an image and a description are.
 or with more fine-granularity as follows:
@@ -182,11 +113,13 @@ Using these as weights they represent images in the semantic space as convex com
 
 There are major differences between our work and  ~\cite{Kodirov2015} which also uses a dictionary learning scheme in which coding coefficients is considered to be
  label embeddings in semantic space. In that work a sparse coding objective with two regularization terms designed specifically for
- zero-shot learning are used to map images into semantic space and class labels are assigned to them using label propagation. We use
- the standard sparse coding objective and use the dictionary learned to map unseen class signatures to visual feature space and then
- use them to assign labels to pre-computed cluster centers.
+ zero-shot learning are used to map images into semantic space. Most importantly, label predictions
+ for unseen instances appear directly in our objective function while in \cite{Kodirov2015} the prediction is accomplished using
+ nearest neighbor or label propagation on embeddings of images in attribute space. Moreover we only learn the mapping
+ on seen instances for which the attributes i. e. the dictionary coefficient are already available and
+ do not learn embedding for test instances in attribute space but map test signatures to image space.
 
-\section{Proposed Approach [Or a name maybe :-?]}
+\section{Proposed Approach [Or a name maybe :-?]} \label{proposed}
 In this section we first ...
 
 
@@ -199,7 +132,8 @@ correspond to seen categories.
 
 We use $X_s \in \mathbb{R}^{d \times N_s}$ and $X_u \in \mathbb{R}^{d \times N_u}$
 to denote matrices whose columns are seen and unseen images respectively where $d$ is the dimension of image features.
-$S_s = [a_1, \ldots, a_{n_s}]$ denotes the matrix of seen class signatures. $S_u$ is defined similarly. $Y_s$
+$S_s = [a_1, \ldots, a_{n_s}]$ denotes the matrix of seen class signatures. $S_u$ is defined similarly.
+$Z_s = [ mathbf{z_1, \ldots, z_{N_s}} ]$
 denotes train data labels in one hot encoding format.
 
 \subsection{Clustering Method}
@@ -215,8 +149,8 @@ share the same label. To overcome this bottleneck, in the next section we
 present a joint frame work to learn cluster assignments jointly with the mapping.
 
 We use a simple ridge regression to map class signatures to visual features. This method, though simple,
-will serve well in our method. The mapping should map a single class signature to various images and is penalized
-for distance from each one, so it is learned in a way that does good \textit{on average}. This is ***ly
+will serve well in our framework. The mapping should map a single class signature to various images and is penalized
+for distance from each one, so it is learned in a way that does good \textit{on average}. This is specifically
 favorable in our setting where we want to use this mapping to classify cluster centers that also
 approximate \textit{average} of class instances.
 
@@ -224,25 +158,26 @@ The mapping is characterized by the following equation
 \begin{equation}
   D = \argmin_D \norm{X_s - D Y_s} + \gamma \norm{D}
 \end{equation}
-where columns of $ Y_s \in \mathcal{R}^{r \times n_s} $  are class signatures of images in columns of $X_s$.
-This equation is known to have closed form solution:
+where columns of $ Y_s \in \mathbb{R}^{r \times n_s} $  are class signatures of images in columns of $X_s$.
+This equation is known to have the closed form solution:
 \begin{equation} \label{eq:dic}
   D = X_s Y_s^T (Y_s Y_s^T + \gamma I)^{-1}
 \end{equation}.
-The parameter $\gamma$ is determined through cross validation of reconstruction loss. We found out through experiment that
-this will do almost as good as the more sophisticated
- cross validation on final classification accuracy in which some seen categories are considered are omitted
- from train data to act as validation classes.
+The parameter $\gamma$ is determined through cross validation which we will describe precisely in Sec.\ref{experiments}.
 
-The clustering problem here is different from conventional semi-supervised clustering tasks \cite{}
-in this way that unlabeled instances are completely disjoint from labeled ones. Here we propose an objective function which
-can be seen as an extension to k-means and captures the special nature of clustering we need.
+The clustering problem over unseen instances in zero-shot recognition is
+ different from conventional semi-supervised clustering tasks \cite{}
+in this way that unlabeled instances are completely disjoint from labeled ones.
+Also converting labels to pairwise similarity and dissimilarity constraints among instances will impose
+a huge number of constraints, this inhibits using pairwise constraint based clustering methods like \cite{}.
+ So here we propose a semi-supervised clustering method which
+can be seen as an extension to k-means and captures the special natures of our problem.
 \begin{equation}
-\minimize_{R, \mathbf{\mu_1, \ldots \mu_k }}  \sum_{n,k} r_{nk} \lVert \mathbf{x_n - \mu_k} \rVert +
- \beta \sum_{n=1}^{N_s} \mathds{1}(\mathbf{r_n \neq y_n})
+\minimize_{R, \mathbf{\mu_1, \ldots, \mu_k }}  \sum_{n,k} r_{nk} \lVert \mathbf{x_n - \mu_k} \rVert +
+ \beta \sum_{n=1}^{N_s} \mathds{1}(\mathbf{r_n \neq z_n})
 \end{equation}
-
-For each labeled instance there is a penalty of $\beta$ if its assigned cluster number is different from its label thus encouraging
+where $\mathbf{\mu_i}$'s are cluster centers and $R = [\mathbf{r_1, \ldots, r_{N_s + N_u }} ]$ is cluster assignments in one-hot encoding format.
+The objective function is similar to kmean's but for each labeled instance there is a penalty of $\beta$ if its assigned cluster number is different from its label thus encouraging
 the first $n_s$ cluster be same as seen classes. This is intuitively plausible, on one hand all data is being used
 in the clustering and on the other ????????
 
@@ -252,23 +187,23 @@ the model not to be very sensitive to these parameters so we fix $\beta=1$ and $
 Finally to assign labels to test instances, we use the mapping $D$ from \eqref{eq:dic} to map class signatures to visual
 features, creating a set of \textit{landmarks} in the images space. We then classify just the cluster centers using a
 nearest neighbor classifier. All of instances in classifier follow up the label predicted for the cluster center.
-
 We argue that the this method of assigning labels to clusters rather than individual instances can mitigate the
 domain shift problem in zero-shot learning.
 ............
 
 \section{Joint mapping and clustering}
+\label{joint}
 In the method we presented earlier, once the the points are assigned to a cluster,
 they all will inevitably share an identical label. This can limit the performance of the method. One
-example happen arises for cluster \textit{outliers} that are distant from center of their cluster but lie
+example arises for cluster \textit{outliers} that are distant from center of their cluster but lie
 nearby a landmark. This instances most probably belong to the class of nearby landmark but will be labeled same
 as their cluster center. To overcome this issue we propose a framework to learn the mapping jointly with cluster assignments
  (which will be reported as label predictions at the end).
  While allowing more flexibility, this framework abates the domain shift problem in the same way as the previous method.
  The objective function is formulated as follows:
  \begin{align} \label{eq:main}
-   \minimize_{R,D} \norm{X_s - D Y_s}  + \lambda \norm{X_t - D S_t R^T } + \gamma \norm{D} \\
-   s.t. \in \{0,1\}^{N_u \times n_u}
+   \minimize_{R,D} \norm{X_s - D Y_s}  &+ \lambda \norm{X_t - D S_t R^T } + \gamma \norm{D} \\
+   \text{s. t.} \quad & R \in \{0,1\}^{N_u \times n_u}
  \end{align}
  The second term in the objective penalizes tries to learn mapping $D$ and cluster assignments minimizing the
  distance between test instances and representation of their class signatures mapped by $D$. By enforcing
@@ -278,7 +213,7 @@ as their cluster center. To overcome this issue we propose a framework to learn 
  mapping of test class signatures and the mapping also appears in the other terms.
 
 \subsection{Optimization}
-The \eqref{eq:main} is not convex and considering that $R$ is a partitioning the global optimization requires an
+The Eq.\eqref{eq:main} is not convex and considering that $R$ is a partitioning the global optimization requires an
 exhaustive search over all possible labeling of test data with $n_u$ labels. So we use a simple coordinate descent
 method like in k-means. We alternate between optimization $R$ or $D$ while fixing the other.
 Having fixed the labeling $R$, the problem becomes a simple multi-task ridge regression which has the closed form solution:
@@ -295,8 +230,39 @@ in less that 15 iterations.
 We rely on good initialization to evade poor local minima.
 We initialize  $R$ by final perditions from our first method.
 
+\section{Experiments} \label{experiments}
+\begin{table*}[ht]\footnotesize
+\begin{minipage}{\textwidth}
+\centering
+\caption{\footnotesize{Zero-shot recognition accuracy comparison (\%) on aP\&Y, AwA, CUB-200-2011, and SUN Attribute, respectively, in the form of mean$\pm$standard deviation. Here except our results, the rest numbers are cited from their original papers. Note that some experimental settings may differ from ours.}}\label{tab:apy}\vspace{1mm}
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+Feature & Method & Animals with Attributes & CUB-2011 & aPascal \& aYahoo & SUN \\
+\hline\hline
+{Non-CNN}
+& Li and Guo \cite{li15max}                 &  38.2$\pm$2.3   &                 &                         & 18.9$\pm$2.5 \\
+& Li \etal~\cite{semi15}                    &  40.05$\pm$2.25 &                 &   24.71 $\pm$3.19       &     \\
+\hline
+\hline
+{GoogleLeNet}
+& Akata \etal~\cite{Akata2015}              & 66.7            & 50.1            &                         & \\
+& Changpinyo \etal~\cite{Synthesized}       & 72.9            & 54.5            &                         & 62.7 \\
+\hline
+{vgg-19 \cite{vgg}}
+& Khodirov \etal \cite{Kodirov2015}\footnote{Results using just attribute vectors as side information is listed here}
+                                            & 73.2            &  39.5           & 26.5                    &  \\
+& Akata \etal~\cite{Akata2015}              & 61.9            &  50.1           &                         & \\
+& Zhang and Saligrama \cite{sse}            &  76.33$\pm$0.53 & 30.41 $\pm$0.20 &   46.23 $\pm$ 0.53      & 82.50 $\pm$ 1.32    \\
+& Zhang and Saligrama \cite{agnostic}       &  80.46$\pm$0.53 & 42.11 $\pm$0.55 &   50.35 $\pm$ 2.97      & 83.83 $\pm$ 0.29    \\
+& Ours (init D) & \textbf{\em 83.03$\pm$0.53} & \textbf{\em 59.39$\pm$0.83} & 49.41$\pm$0.20 & \textbf{\em 88.50$\pm$1.32} \\
+& Ours (init R) & \textbf{\em 83.03$\pm$0.53} & \textbf{\em 59.39$\pm$0.83} & 49.41$\pm$0.20 & \textbf{\em 88.50$\pm$1.32} \\
+%SSE-INT-INT & \textbf{\em 48.79} & 64.60 & 32.15 & \\
+%SSE-INT-ReLU & 43.76 & 66.97 & \textbf{\em 32.70} & \\
+\hline
+\end{tabular}
+\end{minipage}\vspace{-3mm}
+\end{table*}
 
-\section{Experiments}
 \textbf{Data Sets.}
 We evaluate our proposed methods on four popular public benchmarks for zero-shot classification.
 For all datasets we use $4096-$dimensional features from first fully connected layer of VGG19 network \cite{vgg}
@@ -331,40 +297,20 @@ We implemented our method using scikit-learn library \cite{} in Python.
  and used an Intel Core i5 CPU at 3.2 GHz to run the experiments.
 On all datasets in takes less than 10 minutes from loading data to yielding predictions.
 
-\section{Conclusion}
+\section{Conclusion} \label{conclusion}
+This is a conclusion and we conclude.
+This is a conclusion and we conclude.
+This is a conclusion and we conclude.
+This is a conclusion and we conclude.
+This is a conclusion and we conclude.
+This is a conclusion and we conclude.
+This is a conclusion and we conclude.
+This is a conclusion and we conclude.
+This is a conclusion and we conclude.
+This is a conclusion and we conclude.
 
-
-
-
-%
-% An figure in Fig.~\ref{fig:spiral}
-% \begin{figure}[htp]
-% \begin{center}
-% \includegraphics[width=0.5\textwidth]{../images/logo.pdf}
-% \caption{A spiral.}\label{fig:spiral}
-% \end{center}
-% \end{figure}
-%
-% An example of citation~\cite{DBLP:conf/acml/2009}.
-
-\acks{Acknowledgements should go at the end, before appendices and references.}
-
-%\bibliographystyle{plain}
-\bibliography{ref}
-
-\appendix
-
-\section{An Observation about Data Distribution}\label{observation}
-In this section we run a simple experiment on public zero-shot classification benchmarks to justify our
-postulate about distribution of data exhibiting rich clustering property. To this end we run k-means clustering
-algorithm on test instances with number of clusters varying between number of unseen instances and double of that.
-We report rand index score of cluster assignments attained comparing to ground truth labels.
-To make the results more telling we conduct another experiment. We split instances form unseen categories
-to a random 90\%-10\% split train SVMs with RBF kernel on the first split. Classification accuracy on the second split is reported in table \ref{tab}.
-It can be seen that blah blah.%TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-\section{Second Appendix}\label{apd:second}
-
-This is the second appendix.
-
-\end{document}
+\section*{Acknowledgement}
+{\small
+\bibliographystyle{ieee}
+\bibliography{../ref}
+}

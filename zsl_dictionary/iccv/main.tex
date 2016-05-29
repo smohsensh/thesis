@@ -30,7 +30,7 @@
 \begin{document}
 
 %%%%%%%%% TITLE
-\title{Title Goes Here}
+\title{Semi-supervised Zero-Shot Learning by a Clustering-based Approach}
  \author{Seyed Mohsen Shojaee and Mahdieh Soleymani Baghshah\\
  Sharif University of Technology \\
  Tehran, Iran\\
@@ -47,8 +47,7 @@ In some of object recognition problems, labeled data may not be available for al
  describing all the categories in order to find a classifier that can recognize samples of all the categories
  even those we do not have labeled samples for. %RR It is usually only unseen classes
 In this paper, we propose a novel semi-supervised zero-shot learning method that works on an embedding space corresponding to
-abstract deep visual features. We seek a linear transformation on signatures to map them onto the visual features such that t
-he mapped signatures of the seen classes are close to labeled samples of the corresponding
+abstract deep visual features. We seek a linear transformation on signatures to map them onto the visual features such that the mapped signatures of the seen classes are close to labeled samples of the corresponding
 classes and unlabeled data are also close to the mapped signatures of one of the unseen classes.
  We use the idea that the rich deep visual features provide a representation
  space in which samples of each class are usually condensed in a cluster. The effectiveness of the proposed method is demonstrated through extensive
@@ -66,7 +65,7 @@ To describe the task more precisely, in the training phase, labeled instances fo
 while for other categories called unseen ones there is no labeled instance available.
 In the test phase, unlabeled instances should be classified into seen or unseen categories. In this work, however, we focus on the most popular version of zero-shot recognition in which test instances belong only to unseen categories.
  %In this setting, zero-shot learning mitigates the problem of acquiring labeled instances, which can be hard for a novel, rare or fine-grained categories.
-\\ %RR ?
+
 Most existing methods for zero-shot learning focus on using labeled images to learn a compatibility function indicating how similar an image is
 to each label embedding. Each instance will then be labeled with the category having the most compatible signature.
  On the other hand, recent advances in deep convoloutional neural networks provide rich visual features with high discrimination capability.
@@ -74,18 +73,17 @@ to each label embedding. Each instance will then be labeled with the category ha
 
  %In the previous works, most concentration has been on finding embeddings for visual features and little effort has been made to exploit unsupervised information in images domain.
 
-In this paper, we propose a semi-supervised zero-shot learning method that uses both labeled samples of seen classes and unlabeled samples of unseen classes to find a more proper representation of labels (i.e., label embedding) in the space of deep visual features. We seek a linear transformation to map the auxiliary information to the space of abstract visual features. In the proposed method,
-we find a linear mapping on the signatures and jointly find assignments of unlabeled samples to unseen classes.
-We intend to seek a linear transformation such that the mapped signature of each seen class tends to be representative for samples of the corresponding class and simultaneously it is possible to find an assignment of unseen samples to unseen classes such that the mapped signature of  each unseen class will also tend to be the representative of the assigned samples to that class.
+In this paper, we propose a semi-supervised zero-shot learning method that uses both labeled samples of seen classes and unlabeled instances of unseen classes to find a more proper representation of labels (i.e., label embedding) in the space of deep visual features. We seek a linear transformation to map the auxiliary information to the space of abstract visual features and jointly find assignments of unlabeled samples to unseen classes.
+We intend to learn a linear transformation such that the mapped signature of each seen class tends to be representative for samples of the corresponding class and simultaneously it is possible to find an assignment of unlabeled samples to unseen classes such that the mapped signature of each unseen class will also tend to be the representative of the assigned samples to that class.
 Using the unlabeled samples of the unseen classes, we can substantially mitigate the domain shift problem previously introduced in \cite{eccv14} that impairs the zero-shot recognition performance.
 %To show the capability of our proposed method that jointly learns the linear transformation on class signatures and label assignments to unlabeled data, we also propose simpler methods that do not use these ideas altogether. Indeed, we also propose two simpler methods that only optimizes one of these two objectives and also a method that considers both of these objectives but does not simultaneously optimizes them. Indeed, after finding the mapping, it uses a clustering algorithm to assign samples of unseen classes to those classes. A semi-supervised clustering algorithm is proposed for this purpose to leverage labels available for seen classes to obtain more accurate cluster assignments.
 We also propose a simpler method that does not jointly learn the linear transformation on class signatures and label assignments to unlabeled data.
-Instead, after finding the mapping according to just instances of seen classes, it uses a clustering algorithm to assign labels to instances of unseen classes. A semi-supervised clustering algorithm is proposed for this purpose to leverage labeled instances available for seen classes to obtain more accurate cluster assignments.
+Instead, after finding the mapping according to just instances of seen classes, it uses a clustering algorithm to assign labels to instances of unseen classes. %A semi-supervised clustering algorithm is proposed for this purpose to leverage labeled instances available for seen classes to obtain more accurate cluster assignments.
 
-In Section \ref{experiments}, we present experimental results on four popular zero-shot classification benchmarks to see that the proposed method outperforms the state-of-the-art methods on three out of these four datasets.
+In Section~\ref{experiments}, we present experimental results on four popular zero-shot classification benchmarks and see that the proposed method outperforms the state-of-the-art methods on three out of these four datasets.
 
-The rest of paper is organized as follow. First, in Section\ref{related}, we briefly introduce existing methods for zero-shot learning.
-Then, in Section\ref{proposed}, we present our semi-supervised zero-shot learning method. In Section \ref{experiments}, we report our experiments and finally in Section\ref{conclusion}
+The rest of paper is organized as follow. First, in Section~\ref{related}, we briefly introduce existing methods for zero-shot learning.
+Then, in Section~\ref{proposed}, we present our semi-supervised zero-shot learning method. In Section \ref{experiments}, we report our experiments and finally in Section~\ref{conclusion}
 we conclude.
 
 %___________________________________________________________________________________________________________________________________________________________
@@ -97,7 +95,7 @@ We can consider the following steps for these methods:
 \begin{itemize}
   \item Find (or use the existing) embeddings for class labels in a semantic space.
   \item Map images into that semantic space.
-  \item Classify images in the semantic space based on the compatibility of the mapped image in the semantic space and the embedded labels in this space (usually using a nearest neighbor classifier or label propagation).
+  \item Classify images in the semantic space based on the compatibility of the mapped image and the embedded labels in this space (usually using a nearest neighbor classifier or label propagation).
 \end{itemize}
 Learning of these three steps may be done independently or jointly.
 
@@ -110,13 +108,12 @@ In \cite{Akata2015pami}, a max-margin objective function similar to the structur
 
 %transfer learning in transductive settings
 
-More recent works exploit bilinear models that are equivalent to embedding images and labels into a
-semantic space and considering the inner product in the embedded space as the compatibility score \cite{Yu2013, devise, convex, sse, emb15,semi15}.
+More recent works exploit bilinear models that are also equivalent to embedding images and labels into a
+common space and considering the inner product in the embedded space as the compatibility score \cite{Yu2013, devise, convex, sse, emb15,semi15}.
 Until now, several objective functions have been proposed for learning such bilinear models.
 In \cite{emb15}, the sum of the squared error on the label prediction is used as the core of a simple cost function for zero-shot learning. However, extra regularization terms that compensate undesirable characteristics of this cost function are also utilized in \cite{emb15}.
 This method can be seen as learning a mapping that transforms description of each class to a linear classifier for that class. This idea has also been used in \cite{li15max, semi15} that introduce a max margin objective function for this purpose.
-However, \cite{semi15} does not fix the label embeddings to externally provided attributes in order to obtain more discriminative label embeddings. These two methods
-differ from other existing methods in this way such that embeddings and labels for test instances are also learned simultaneously. This provides the possibility of
+However, \cite{semi15} does not fix the label embeddings to externally provided attributes in order to obtain more discriminative label embeddings. These two methods also learn embeddings and labels for test instances simultaneously and so they differ from almost all of other existing methods in this way. This provides the possibility of
 leveraging unsupervised information available in test images, for instance as done in \cite{semi15}, by using a Laplacian regularization term that penalizes similar objects assigned to different classes.
 
 Designing label embedding that can be considered as a general framework for multi-class classification is another line of research that can also be used for zero-shot recognition. For a label embedding to be helpful in classification tasks,
@@ -131,32 +128,31 @@ Moreover, in \cite{sse}, a histogram showing seen class proportions is used for 
  but rather than using seen categories as basis, they define a set of (possibly smaller) \textit{phantom} classes whose linear combinations
  create classifiers for both seen and seen categories.
 
- Although most of the studies on zero-shot recognition consider attributes as auxiliary information, some of the existing methods utilize text information for classes as auxiliary information. In fact, in the absence of human annotated attributes, the text obtained from online encyclopedias or just the name of classes is used. Some existing methods first extract features from auxiliary text information and thus turn them into vectors that can be treated analogous to attribute vectors.
+ Although most of the studies on zero-shot recognition consider attributes as auxiliary information, some of the existing methods utilize text information for classes as auxiliary information. In fact, in the absence of human annotated attributes, the text obtained from online encyclopedias or just the name of classes is used. Some existing methods first extract features from auxiliary text information and then turn them into vectors that can be treated analogous to attribute vectors.
  \cite{devise} introduces a bilinear model to find the compatibility score of deep visual features and Word2vec \cite{word2vec} representation of class names. \cite{ba2015} proposes nonlinear mappings modeled by neural networks on the image and the text inputs to find their compatibility.
-  \cite{mohamed13} an objective function to predict classifier parameters from textual descriptions.
- In \cite{Akata2015}, different label embeddings such as attribute vectors, GloVe \cite{pennington2014glove}, word2vec \cite{word2vec}, a variant of word2vec with weak supervision, and also a combination of these different embeddings have been considered as the label embedding for zero-shot recognition. In \cite{Xian2016}, this work is extended further to model nonlinear compatibility functions that can be expressed as a mixture of bilinear models instead of just a bilinear model used in \cite{Akata2015}. Intuitively, different linear models will use different aspects of images to measure the compatibility and the proper aspect is selected automatically for every test image.
+  \cite{mohamed13} presents an objective function to predict classifier parameters from textual descriptions. In \cite{Akata2015}, different label embeddings such as attribute vectors, GloVe \cite{pennington2014glove}, word2vec \cite{word2vec}, a variant of word2vec with weak supervision, and also a combination of these different embeddings have been considered as the label embedding for zero-shot recognition. In \cite{Xian2016}, this work is extended further to model nonlinear compatibility functions that can be expressed as a mixture of bilinear models instead of just a bilinear model used in \cite{Akata2015}. Intuitively, different linear models will use different aspects of images to measure the compatibility and the proper aspect is selected automatically for every test image.
   In \cite{Qiao2016}, a modification of \cite{emb15} is presented as a specifically designed method for textual auxiliary information. The authors of \cite{Qiao2016}
   argue that textual documents are mush more noisy than attribute vectors and design special terms to suppress this noise.
 
 In \cite{Fu2016}, a set of vocabulary much larger than just seen and unseen class names is used and mapping from images to word embeddings is learned
 by  maximizing the margin with respect to all words in the vocabulary; this framework can be used in zero-shot and also supervised and open set learning problems.
-In  \cite{Akata2016}, authors proposes to use multiple auxiliary information and also  part annotation in image domain to compensate for weaker supervision in textual data.
-The nature of zero-shot learning problem in which usually only one document exists has hindered using more sophisticated models for text embedding.
+In  \cite{Akata2016}, authors propose to use multiple auxiliary information and also  part annotation in image domain to compensate for weaker supervision in textual data.
+The nature of zero-shot learning problem in which usually only one document exists for each category has hindered using more sophisticated models for text embedding.
 To narrow the gap between performance of attribute-based and text-based methods, a larger set of textual descriptions was collected
 by authors of \cite{Akata2016rnn} for two fine-grained recognition benchmarks and convolutional and recurrent neural networks have been used for text embedding on these benchmarks in \cite{Akata2016rnn}.
 
- The most related methods to the our method are the introduced ones in \cite{li15max, semi15, Kodirov2015} that are indeed semi-supervised zero-shot learning methods. Here, we briefly specify the differences between these methods and ours. First, we use abstract visual features obtained by deep learning as the semantic space as opposed to these methods. \cite{li15max, semi15}
-learn a max margin classifier on the image space classifying both seen and unseen instances while we use a ridge regression to map signatures to the semantic visual space resulting in a much simpler optimization problem to solve. Since samples of different classes are usually condensed in distinct regions of the deep visual representation space, our proposed optimization problem is based on clustering of data in this space and we try to map the class signatures on the centroid of corresponding samples. We also explicitly account for domain shift problem in our objective function and thus achieving better results compared to these methods.
+ The most related methods to our method are the introduced ones in \cite{li15max, semi15, Kodirov2015} that are indeed semi-supervised zero-shot learning methods. Here, we briefly specify the differences between these methods and ours. First, we use abstract visual features obtained by deep learning as the semantic space as opposed to these methods. \cite{li15max, semi15}
+learn a max margin classifier on the image space classifying both seen and unseen instances while we use a ridge regression to map signatures to the semantic visual space resulting in a much simpler optimization problem to solve. Since samples of different classes are usually condensed in distinct regions of the deep visual representation space, our proposed optimization problem is based on clustering of data in this space and we try to map the class signatures on the centroid of the corresponding samples. We also explicitly account for domain shift problem in our objective function and thus achieving better results compared to these methods.
 
-There are major differences between our work and ~\cite{Kodirov2015} using a dictionary learning scheme in which coding coefficients are considered to be label embeddings in a semantic space and a sparse coding objective is used to map images into this representation space. First, our proposed optimization problem as mentioned above is based on clustering of data in the semantic space of deep visual features in which different classes appear as dense clusters. Most importantly, labels of unseen instances are jointly learned with the mapping of the signatures to the semantic space in our objective function while in \cite{Kodirov2015} the label prediction is accomplished using the nearest neighbor or the label propagation on embeddings of images. Thus, labels of unseen data are not learned in a joint manner in this method and instead are found from the embedding of these instances. On the other hand, we do not need to learn embedding of all training and test instances in the semantic space as opposed to \cite{Kodirov2015} since we utilize an explicit mapping obtained according to a deep network that can map all of these instances to the visual semantic space and so we do not need to learn all of the embeddings.
+There are major differences between our work and ~\cite{Kodirov2015} using a dictionary learning scheme in which coding coefficients are considered to be label embeddings in a semantic space and a sparse coding objective is used to map images into this representation space. First, our proposed optimization problem as mentioned above is based on clustering of data in the semantic space of deep visual features in which different classes appear as dense clusters. Most importantly, labels of unseen instances are jointly learned with the mapping of the signatures to the semantic space in our objective function while in \cite{Kodirov2015} the label prediction is accomplished using the nearest neighbor or the label propagation on embeddings of images. Thus, labels of unseen data are not learned in a joint manner in this method and instead are found from the embedding of these instances. On the other hand, we do not need to learn embedding of all training and test instances in the semantic space as opposed to \cite{Kodirov2015} since we utilize an explicit mapping obtained according to a deep network that can map all of these instances to the visual semantic space and so we do not need to learn embeddings of all instances.
 
 \section{Proposed Approach} \label{proposed}
 In this section, we introduce a zero-shot learning method that uses the deep visual features as the semantic space and learns
 a mapping from class signatures to this semantic space and also learns labels of instances belonging to unseen classes.
- First, we propose a simple and efficient semi-supervised zero-shot learning method in Section \ref{clustering}.
-  Then, we introduce an optimization problem that tries to simultaneously learn the mapping and label assignment to test instances in Section \ref{joint}.
-   Finally, we introduce an iterative method to solve this optimization problem in Section \ref{optimization}
-   and use the simple method proposed in \ref{clustering} to find a start point for this method (i.e., an initial labellings for instances of unseen classes).
+ First, we propose a simple and efficient semi-supervised zero-shot learning method in Section~\ref{clustering}.
+  Then, we introduce an optimization problem that tries to simultaneously learn the mapping and the label assignment to test instances in Section~\ref{joint}.
+   Finally, we introduce an iterative method to solve this optimization problem in Section~\ref{optimization}
+   and use the simple method proposed in Section~\ref{clustering} to find a start point for this method (i.e., as an initial labellings for instances of unseen classes).
 \subsection{Notation}
 Let $X, \mathbf{x}$, and $x$ denote matrices, column vectors, and scalars respectively. $\norm{X}$ shows the Frobenius norm of a matrix and
 $X_{(i)}$ denotes its $i$th column.
@@ -174,7 +170,7 @@ Our first method can be roughly summarized in three steps:
 \begin{enumerate}
   \item Using data from seen classes, we learn a linear mapping from attribute vectors to the semantic space.
   \item We find a data clustering using our proposed semi-supervised clustering algorithm.
-  \item We then label each cluster by finding the label whose mapped signature in the semantic visual space is the nearest to the center of that cluster.
+  \item For instances of each cluster, we find the label whose mapped signature in the semantic visual space is the nearest one to the center of that cluster and assign that label to all of these instances.
 \end{enumerate}
 
 We use a simple ridge regression to map class signatures to visual features. We intend to find a mapping from class signatures to the deep visual representation space such that each mapped (seen) class signature is close to the samples of that class in this space in average.
@@ -187,11 +183,11 @@ This optimization problem is known to have the following closed form solution:
 \begin{equation} \label{eq:dic}
   D = X_s Y_s^T (Y_s Y_s^T + \gamma I)^{-1}.
 \end{equation}
-The parameter $\gamma$ is determined through cross validation as we will describe precisely in Section \ref{experiments}.
+The parameter $\gamma$ is determined through cross validation as we will describe precisely in Section~\ref{experiments}.
 
-Here, we intend to find labels for instances belonging to unseen classes. To this end, we want to find a clustering of instances in the space of deep visual features and assign a label to each cluster according to the distance between the center of that cluster and the mapped signature of the unseen classes (i.e., consider the label whose mapped signature is the closest one to the cluster center as the assigned label to the instances of this cluster). To find a better clustering of instances belonging to unseen classes, we can also incorporate labeled instances of seen classes too. The clustering problem over unseen instances, we encountered here, is different from conventional semi-supervised learning tasks \cite{}.
+Here, we intend to find labels for instances belonging to unseen classes. To this end, we want to find a clustering of instances in the space of deep visual features and assign a label to each cluster according to the distance between the center of that cluster and the mapped signature of the unseen classes (i.e., consider the label whose mapped signature is the closest one to the cluster center as the assigned label to the instances of this cluster). To find a better clustering of instances belonging to unseen classes, we can also incorporate labeled instances of seen classes too. The clustering problem over unseen instances, we encountered here, is different from the conventional semi-supervised learning problem \cite{}.
 In fact, all labeled data are from seen classes and there is no labeled sample for unseen classes that is due to the special characteristic of zero-shot learning problem. Therefore, here, we propose a semi-supervised learning method which
-can be seen as an extension to k-means and consider the special nature of our problem in this method.
+can be seen as an extension to k-means suitable for this problem.
  We try to find a clustering such that labeled instances tend to be assigned to the corresponding classes and all instances tend to be close to the center of the clusters to which they are assigned:
 \begin{equation}
 \minimize_{R, \mathbf{\mu_1, \ldots, \mu_k }}  \sum_{n,k} r_{nk} \lVert \mathbf{x_n - \mu_k} \rVert +
@@ -213,17 +209,17 @@ Finally, to assign labels to test instances, we use the mapping $D$ from \eqref{
 %This is specifically favorable in our setting where we want to use this mapping to classify cluster centers that also approximate \textit{average} of class instances.
 
 %Because all members of each cluster is assumed to share the same label. To overcome this bottleneck, in the next section we present a joint frame work to learn cluster assignments jointly with the mapping.
-A key distinction between the method presented here and other existing methods lies in nature of compatibility function. The compatibility function in
-other works is a similarity measure between each instance and description and is computed independently, while the compatibility function here
-relies strongly on instances and their similarity score to description.
-Although the above method outperforms the state-of-the-art methods on most zero-shot recognition benchmarks, it uses only the instances of the seen classes to find the linear transformation from class signatures to the visual feature space and thus the proposed method may suffer from the domain shit problem introduced in \cite{eccv14}.
-To overcome the domain shift problem, we propose an optimization problem for finding the linear transform from class signatures to the visual feature space that uses instances of both seen and unseen classes.
+A key distinction between the clustering-based method presented here and other existing methods lies in the nature of the compatibility function. The compatibility function in
+other works is a similarity measure between each instance and class description that is found independently for different instances. Here, the compatibility function relies strongly on the distribution of instances in the semantic space and the compatibility of a label for an instance is found according to the similarity of the cluster center to which this instance is assigned and the mapped signature of that label. Therefore, by considering the distribution of data points (via clustering) in designing the compatibility function we can reach a more reliable measure.
 
-\section{Jointly learning mapping and clustering}
+Although the above method outperforms the state-of-the-art methods on most zero-shot recognition benchmarks, it uses only the instances of the seen classes to find the linear transformation from class signatures to the visual feature space and thus the proposed method may suffer from the domain shit problem introduced in \cite{eccv14}.
+To overcome the domain shift problem more substantially, we propose an optimization problem for finding the linear transform from class signatures to the visual feature space that uses instances of both seen and unseen classes.
+
+\subsection{Jointly learning mapping and clustering}
 \label{joint}
 %In the method we proposed earlier, once the the points are assigned to a cluster, they all will inevitably share an identical label. This can limit the performance of the method. One example arises for cluster \textit{outliers} that are distant from center of their cluster but lie nearby a landmark. This instances most probably belong to the class of nearby landmark but will be labeled same as their cluster center. To overcome this issue we propose a framework to learn the mapping jointly with cluster assignments  (which will be reported as label predictions at the end).  While allowing more flexibility, this framework abates the domain shift problem in the same way as the previous method.
  In this section, we propose an optimization problem for learning a linear transformation from class signatures to the visual features space such that the mapped signatures are good representatives of the corresponding instances.
- We intend to learn a transformation such that for the seen classes, the sum of the squared distances of instances from the mapped signature of the corresponding class is minimized. Moreover, for the instances of unseen classes, we can find class assignments such that the sum of the squared distances of unseen instances from the mapped signature of classes to which they are assigned is also minimized.
+ We intend to learn a transformation such that for the seen classes, the sum of the squared distances of instances from the mapped signature of the corresponding class is minimized. Moreover, for instances of unseen classes, we can find class assignments such that the sum of the squared distances of unseen instances from the mapped signature of classes to which they are assigned is also minimized.
  The objective function is formulated as follows:
  \begin{align} \label{eq:main}
    \minimize_{R,D} \norm{X_s - D Y_s}  &+ \lambda \norm{X_t - D S_t R^T } + \gamma \norm{D} \\
@@ -233,12 +229,12 @@ The first term in the above optimization problem is identical to \eqref{eq:mappi
  the signatures to be mapped close to test instances, this term confronts the domain shift problem. In fact, we seek a class assignment for instances of unseen classes such that we can learn a linear transformation on class signature to use the mapped signature of both seen and unseen classes as good representatives for the corresponding instances.
  The second term can be essentially considered as a clustering objective but with two advantages. First, the number of clusters is no longer a
  parameter and it is determined by the number of unseen classes. Second, the cluster centers are set to be the mapped signatures of test classes.
-$D$.
+
 \subsection{Optimization} \label{optimization}
-The Eq.\eqref{eq:main} is not convex and considering that $R$ is a partitioning of instances, the global optimization requires an
+The Eq.~\eqref{eq:main} is not convex and considering that $R$ is a partitioning of instances, the global optimization requires an
 exhaustive search over all possible labeling of test data with $n_u$ labels. Therefore, we use a simple coordinate descent
 method (like k-means). We alternate between optimizing $R$ and $D$ while fixing the other.
-Having fixed the labeling $R$, the problem becomes a simple multi-task ridge regression which has the closed form solution:
+Having fixed the labeling $R$, the problem becomes a simple multi-task ridge regression which has the following closed-form solution:
 \begin{equation} \label{eq:d_update}
   D = (X_s Y_s^T + \beta X_u R S_u^T) (Y_s Y_s^T + \beta S_u R^T R S_u^T  + \gamma I)^{-1}.
 \end{equation}
@@ -298,7 +294,7 @@ Feature & Method & Animals with Attributes & CUB-2011 & aPascal-aYahoo & SUN \\
 & Zhang and Saligrama \cite{sse}            &  76.33$\pm$0.53 & 30.41 $\pm$0.20 &   46.23 $\pm$ 0.53      & 82.50 $\pm$ 1.32    \\
 & Zhang and Saligrama \cite{agnostic}       &  80.46$\pm$0.53 & 42.11 $\pm$0.55 &   50.35 $\pm$ 2.97      & 83.83 $\pm$ 0.29    \\
 
-& Ours (Simple)                             & 86.58$\pm$1.12               & 53.50$\pm$0.83              & 49.86$\pm$2.36              & 84.50$\pm$1.32 \\
+& Ours (Simple)                             & 86.80$\pm$0.75               & 53.50$\pm$0.83              & 49.86$\pm$2.36              & 84.50$\pm$1.32 \\
 & Ours (Joint - init D)                     & 83.03                        & 57.55                       & 49.77          & 72.50\\
 & Ours (Joint - init R)                     & \textbf{\em 88.64$\pm$0.00}  & \textbf{\em 58.80$\pm$0.64} & 49.77$\pm$2.02 & \textbf{\em 86.13$\pm$1.03} \\
 \hline
@@ -322,39 +318,36 @@ as in \cite{jayaraman14} where 10 classes have been considered unseen.
 birds where each image has been annotated with 312 binary attributes. Again, we average over instances to get continuous class signatures.
 We use the same train/test split as in \cite{akata13} (and many other following works) to make comparison possible.
 
-
 As our method relies on meaningful structure in visual features domain, we use features from a deep CNN known that are
  more discriminative than \textit{shallow} features like SIFT or HOG. We report results using
   $4096-$dimensional features from the first fully connected layer of 19 layer VGG network \cite{vgg}
 pre-trained on the subset, provided publicly by \cite{sse}.
 %We also report results using 2) $1024-$dimentional features from GoogleLeNet \cite{googlenet} provided publicly by \cite{Akata2015}.
 
-First to give evidence for  our key assumption for our method that instances from each class form cluster in visual feature domains
+First, to give evidence for our key assumption of our method that instances from each class usually form a cluster in visual feature domains
 and to demonstrate effectiveness of our proposed clustering algorithm we design an
-experiment in which a instances from unseen categories are clustered using our proposed clustering algorithm and also Kmeans. Then
- each cluster is assigned with a class label based on majority voting on ground truth labels. Number of classes
- is set to number of classes as a natural choice.\footnote{In experiments we found that increasing number of clusters can improve gain higher accuracy}
-For Kmeans we use the implementation available in Scikit-learn library \cite{scikit-learn}, Algorithm is ran with 20 different initializations
-and one with the best score is used.
-In initialization of our method, cluster centers for clusters corresponding to seen classes are set  mean of instances from that class. Centers of other
-clusters corresponding to unseen classes are initialized using kmeans++ \cite{kmeanspp} on unlabeled instances.
-Accuracy of this labeling scheme is reported in Table~\ref{tab:cluster}.
+experiment in which instances from unseen categories are clustered using our proposed clustering algorithm and also the kmeans algorithm. Then,
+each cluster is assigned with a class label based on majority voting on ground truth labels. The number of clusters
+ is set to the number of classes as a natural choice (increasing the number of clusters improves the accuracy).
+For the kmeans algorithm, we use the implementation available in Scikit-learn library \cite{scikit-learn} and run it with 20 different initializations
+and report results of that one with the best score.
+To initialize our clustering method, for clusters corresponding to seen classes the centers are set as mean of instances from that class. Centers of other
+clusters are initialized using kmeans++ \cite{kmeanspp} on unlabeled instances.
+Accuracy of this labeling scheme that is based on clustering is reported in Table~\ref{tab:cluster}. These results show that clustering works and the cluster structure assumption in the visual semantic space is usually right.
 
 To adjust parameters $\gamma$ and $\beta$ in Eq.~\ref{eq:d_update}, we split training data into train and validation sets.
 We choose a number of categories randomly from training data as validation categories. For each data set, the size of the
 validation set has the same ratio to the train set as the size of the test categories to the total of the train and the validation one.
-In our experiments we used $10-$fold cross validation i.e. average result from ten different validation splits are used to decide on
+In our experiments, we used $10-$fold cross validation, i.e., average results from ten different validation splits are used to decide on
 optimal parameters.
-Once optimal $\gamma$ and $\beta$ are determined through grid search by testing on validation set, the model
-is then trained on all seen categories.
-
-We summarize our experimental results in \ref{tab:results}.
-Ours (Simple) corresponds to method presented in Sec.~\ref{clustering}.
-Ours(init - D) and Ours(init - R) corresponds to optimizing Eq.~\eqref{eq:main}
-with initializing $D$ or $R$ with Eq.~\eqref{eq:dic} or results from our simple method respectively.
-For our methods, average and standard deviation for runs are reported.
-
- For other methods, we use the results reported in their original publication. Note that some experimental settings may differ from ours. We did not re-implement any of the other methods and if the original paper does not report results on a data set we leave the corresponding cell blank.
+Once optimal $\gamma$ and $\beta$ are determined through the grid search by testing on validation set, the model
+is then trained on all seen categories.\\
+We summarize our experimental results in Table~\ref{tab:results}.
+Ours (Simple) corresponds to the method presented in Sec.~\ref{clustering}.
+Ours(init - D) and Ours(init - R) correspond to optimizing Eq.~\eqref{eq:main}
+with respectively initializing $D$ using Eq.~\eqref{eq:dic} and initializing $R$ by our simple method proposed in Sec.~\ref{clustering}.
+For our methods, average and standard deviation of different runs are reported.
+ For other methods, we use the results reported in their original publication. Note that some experimental settings of these works may differ from those of ours. We did not re-implement any of the other methods and if the original paper does not report results on a data set we leave the corresponding cell as blank.
 Our method performs the best on three out of the four datasets (outperforms the others on all except to the aPascal-aYahoo dataset). This can be explained by the nature of the dataset in which class signatures obtained by averaging instance attributes are very similar. We suppose trying to learn
 more discriminative signatures from data can potentially improve the result. We investigate this in our future work.
 
@@ -364,11 +357,10 @@ more discriminative signatures from data can potentially improve the result. We 
 
 \section{Conclusion} \label{conclusion}
 In this paper, we proposed semi-supervised methods for zero-shot object recognition. We used the space of deep visual features as a semantic visual space and learned a linear transformation to map class signatures to this space such that the mapped signatures provide good representative of the corresponding instances. We utilized this property that the rich deep visual features provide a representation space in which samples of each class are usually condensed in a cluster. In the proposed method that jointly learns the mapping of class signatures and the class assignments of unlabeled data, we used also unlabeled instances of unseen classes when learning the mapping to alleviate the domain shift problem. Experimental results showed that the proposed method generally outperformed the other recent methods.
-\section*{Acknowledgement}
+%\section*{Acknowledgement}
 {\small
 \bibliographystyle{ieee}
 \bibliography{ref}
 }
 
 \end{document}
-`'

@@ -8,6 +8,8 @@
 \usepackage{dsfont}
 \usepackage{tablefootnote}
 \usepackage{multirow}
+\usepackage{caption}
+\usepackage{subcaption}
 % Include other packages here, before hyperref.
 \usepackage[ruled]{algorithm2e}
 
@@ -88,7 +90,7 @@ In this paper, we propose Joint Embedding and Clustering (JEaC),
 a semi-supervised zero-shot learning method that uses both labeled samples of seen classes and unlabeled instances
  of unseen classes to find a more proper representation of labels (i.e., label embedding) in the space of deep visual features.
   We seek a linear transformation to map the auxiliary information to the space of abstract
-   visual features and jointly find assignments of unlabeled samples to unseen classes.
+   visual features and jointly find assignments of unlabeled samples to unseen classes (Figure~\ref{fig:overview} ).
 We intend to learn a linear transformation such that the mapped signature of each seen class tends to be representative
  for samples of the corresponding class and simultaneously
 it is possible to find an assignment of unlabeled samples to unseen classes such that the mapped signature of each unseen class
@@ -405,7 +407,7 @@ Feature & Method & Animals with Attributes & CUB-2011 & aPascal-aYahoo & SUN \\
 & Zhang and Saligrama \cite{agnostic}       &  80.46$\pm$0.53 & 42.11 $\pm$0.55 &   \textbf{50.35 $\pm$ 2.97}      & 83.83 $\pm$ 0.29    \\
 
 & Ours (k-means)                             & 86.34$\pm$0.13               & 52.48$\pm$0.60              & 48.03$\pm$1.56              & 75.75$\pm$1.06 \\
-& Ours (Simple)                             & 86.38$\pm$0.56               & 53.10$\pm$0.43              & 48.00$\pm$0.69              & 80.66pm$0.76$ \\ 
+& Ours (Simple)                             & 86.38$\pm$0.56               & 53.10$\pm$0.43              & 48.00$\pm$0.69              & 80.66$pm$0.76 \\
 & Our JEaC (init D)                     & 83.03                        & 57.55                       & 42.62          & 72.50\\
 & Our JEaC (init R)                     & \textbf{\em 88.64$\pm$0.04}  & \textbf{\em 58.80$\pm$0.64} & 49.77$\pm$2.02 & \textbf{\em 86.16$\pm$0.57} \\
 \hline
@@ -468,6 +470,66 @@ unlabeled data is leveraged when initializing $R$ while such information is abse
  For other methods, we use the results reported in their original publication. Note that some experimental settings of these works may differ from those of ours. We did not re-implement any of the other methods and if the original paper does not report results on a data set we leave the corresponding cell as blank.
 Our method performs the best on three out of the four datasets (outperforms the others on all except to the aPascal-aYahoo dataset). This can be explained by the nature of the dataset in which class signatures obtained by averaging instance attributes are very similar. We suppose trying to learn
 more discriminative signatures from data can potentially improve the result. We investigate this in our future work.
+
+The effectiveness of different components of our methods in further illustrated in Figure~\ref{fig:tsne}. As it can be seen in
+Figure~\ref{fig:knn} merely using mapping from Eq. \eqref{eq:dic} results in poor signature embeddings where domain shift problem is
+visible. However using the compatibility function based on cluster assignments, although the there is no change in mappings,
+label assignments are improved, our clustering  (Figure~\ref{fig:clustering} ) performing  better than k-means (Figure~\ref{fig:kmeans}). Finally using
+mapping from JEaC, the domain shift problem is substantially alleviated and far better signature embeddings are achieved.
+
+\begin{figure*}[t]
+  \centering
+  \label{fig:tsne}
+  \begin{subfigure}[b]{0.27\linewidth}
+    \includegraphics[width=\linewidth]{figure_1}
+    \caption{}
+    \label{fig:null}
+  \end{subfigure}
+%
+  \begin{subfigure}[b]{0.27\linewidth}
+    \includegraphics[width=\linewidth]{figure_1_true}
+    \caption{}
+% \caption{Points colored according to their ground truth labels}
+    \label{fig:truth}
+  \end{subfigure}
+%
+  \begin{subfigure}[b]{0.27\linewidth}
+    \includegraphics[width=\linewidth]{figure_2}
+    % \caption{Signatures mapped to image spacing using Eq. \eqref{eq:dic} and denoted by stars. Then classification done using nearest neighbor}
+    \caption{}
+\label{fig:knn}
+  \end{subfigure}
+%
+  \begin{subfigure}[b]{0.27\linewidth}
+    \includegraphics[width=\linewidth]{figure_3_kmeans}
+    % \caption{Stars as previous. Classification done by our compatibility function on cluster assignments from k-means}
+    \caption{}
+\label{fig:kmeans}
+  \end{subfigure}
+%
+  \begin{subfigure}[b]{0.27\linewidth}
+    \label{fig:clustering}
+    \includegraphics[width=\linewidth]{figure_3}
+    \caption{}
+% \caption{Stars as previous. Classification by our compatibility function using our supervised clustering}
+  \end{subfigure}
+%
+  \begin{subfigure}[b]{0.27\linewidth}
+    \label{fig:joint}
+    \includegraphics[width=\linewidth]{figure_4}
+    \caption{}
+% \caption{Class signatures mapped to image space (stars) and cluster assignment by JEaC}
+  \end{subfigure}
+  \caption{t-SNE embedding of five classes from AwA, three seen: antelope (magenta), grizzly bear (yellow), killer whale (cyan) and two
+  unseen: chimpanzee (blue), giant panda (green). Images shown by plus signs and embedding of class signatures in images space by stars.
+  in figures b-f black points denote assignment to a class other five classes shown here.
+  \textbf{b)} Points colored according to their ground truth labels
+  \textbf{c)} Signatures mapped to image spacing using Eq. \eqref{eq:dic}. Then classification done using nearest neighbor
+  \textbf{d)} Classification done by our compatibility function on cluster assignments from k-means
+  \textbf{e)} Classification by our compatibility function using our supervised clustering
+  \textbf{f)} Class signatures mapping and cluster assignment by JEaC
+  }
+\end{figure*}
 
 % We implemented our method using scikit-learn library \cite{scikit-learn} in Python.
 % \footnote{Code is available at online :-?}

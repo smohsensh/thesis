@@ -224,7 +224,7 @@ In fact, all labeled data are from seen classes and there is no labeled sample f
 can be seen as an extension to k-means suitable for this problem.
  We try to find a clustering such that labeled instances tend to be assigned to the corresponding classes and all instances tend to be close to the center of the clusters to which they are assigned:
 \begin{equation} \label{eq:simple}
-\minimize_{R, \mathbf{\mu_1, \ldots, \mu_k }}  \sum_{n,k} r_{nk} \lVert \mathbf{x_n - \mu_k} \rVert +
+\minimize_{R, \mathbf{\mu_1, \ldots, \mu_k }}  \sum_{n,k} r_{nk} \lVert \mathbf{x_n - \mu_k} \rVert_2^2 +
  \beta \sum_{n=1}^{N_s} \mathds{1}(\mathbf{r_n \neq z_n}),
 \end{equation}
 where $\mathbf{\mu_i'}$s are cluster centers and $R = [\mathbf{r_1, \ldots, r_{N_s + N_u }} ]$ is cluster assignments in one-hot encoding format.
@@ -289,19 +289,19 @@ The first term in the above optimization problem is identical to Eq.\eqref{eq:ma
 \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
   \Input{ $X_s, Y_s, Z_s, X_u, S_u$}
   \Output{$Z_u$ (label predictions for $X_u$)}
-  $k \in \{ 1,2, \ldots, n_s + n_u \}$\\
+$k \in \{ 1,2, \ldots, n_s + n_u \}$\\
   $n \in \{ 1,2, \ldots, N_s + N_u \}$ \\
   \BlankLine
-  Initialize $\mathbf{\mu_k}$ by Eq. \eqref{eq:updata_mu}, $k=1,\ldots,n_s$\;
-  Initialize $\mathbf{\mu_k}$ by kmeans++, $k=n_s+1,\ldots,n_s+n_u$\;
+  Initialize $\boldsymbol{\mu_k}$ by Eq. \eqref{eq:updata_mu}, $k=1,\ldots,n_s$\;
+  Initialize $\boldsymbol{\mu_k}$ by kmeans++, $k=n_s+1,\ldots,n_s+n_u$\;
  \Repeat{convergence to local minimum}{
     $ c_n \leftarrow  {\argmin_i \lVert x_n - \mu_i \rVert_2};$  //cluster assignments\\
-    $\mathbf{\mu_k} \leftarrow \sum_{n} \mathbf{x_n} \mathds{1}(r_n = \mathbf{1}_k) / \sum_n (\mathds{1}(c_n = k) $ \;
+    $\mathbf{\mu_k} \leftarrow \sum_{n} \mathbf{x_n} \mathds{1}(c_n = k) / \sum_n (\mathds{1}(c_n = k) $ \;
  }
  $  D \leftarrow X_s Y_s^T (Y_s Y_s^T + \gamma I)^{-1}$\;
  // array $l$ maps cluster numbers to labels
- $l[k] = \argmin_j \lVert \mathbf{\mu_k} - (DS_u)_{(j)} \rVert_2$\;
-  $\mathbf{(Z_u)_{(n)}} = \mathbf{1}_{l[c_n]}$\;
+ $l[k] \leftarrow \argmin_j \lVert \mathbf{\mu_k} - (DS_u)_{(j)} \rVert_2$\;
+  $\mathbf{(Z_u)_{(n)}} \leftarrow \mathbf{1}_{l[c_n]}$\;
  }
  \caption{Training Procedure of simple version of our method }
 \end{algorithm}
@@ -344,8 +344,6 @@ To evade poor local minima, we propose a good initialization that is based on th
 \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
   \Input{ $X_s, Y_s, Z_s, X_u, S_u$}
   \Output{$Z_u$ (label predictions for $X_u$)}
-  $k \in \{ 1,2, \ldots, n_s + n_u \}$\\
-  $n \in \{ 1,2, \ldots, N_s + N_u \}$ \\
   \BlankLine
   Initialize $R$ by output of Algorithm \ref{alg:leca} \;
  \Repeat{no element of $R$ changes}{
@@ -434,7 +432,7 @@ We use the same train/test split as in \cite{akata13} (and many other following 
 As our method relies on meaningful structure in visual features domain, we use features from a deep CNN known that are
  more discriminative than \textit{shallow} features like SIFT or HOG. We report results using
   $4096-$dimensional features from the first fully connected layer of 19 layer VGG network \cite{vgg}
-pre-trained on the subset, provided publicly by \cite{sse}.
+pre-trained on image-net, provided publicly by \cite{sse}.
 %We also report results using 2) $1024-$dimentional features from GoogleLeNet \cite{googlenet} provided publicly by \cite{Akata2015}.
 
 \textbf{Testing Cluster Assumption:}

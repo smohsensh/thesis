@@ -7,15 +7,17 @@
 \usepackage{graphicx,fancyhdr,enumitem}
 %\usepackage{captionx}
 %\usepackage{subcaptionx}
-\usepackage{subfigure}
 \usepackage{amssymb,amsmath}
 \usepackage[mathscr]{euscript}
 \usepackage{geometry}
 \usepackage{longtable}
-
+\usepackage{subcaption}
 \usepackage{packages/algorithm}
 \usepackage{packages/algorithmicx}
 \usepackage[noend]{packages/algpseudocode}
+\usepackage{tikz}
+\usetikzlibrary{bayesnet}
+% \usepackage[ruled]{algorithm2e}
 
 \usepackage{xepersian}
 
@@ -66,8 +68,8 @@
 % Replace periods with dashes in Farsi numbers
 
 \makeatletter
-\renewcommand \thesection {\@arabic\c@section-\@arabic\c@chapter}      
-\renewcommand \thesubsection {\@arabic\c@subsection-\@arabic\c@section-\@arabic\c@chapter}      
+\renewcommand \thesection {\@arabic\c@section-\@arabic\c@chapter}
+\renewcommand \thesubsection {\@arabic\c@subsection-\@arabic\c@section-\@arabic\c@chapter}
 \renewcommand \thetable {\@arabic\c@table-\@arabic\c@chapter}
 \renewcommand \thefigure {\@arabic\c@figure-\@arabic\c@chapter}
 \renewcommand \theequation {\@arabic\c@equation-\@arabic\c@chapter}
@@ -88,10 +90,10 @@
 % -------------------- Commands --------------------
 
 
-\newcommand{\IR}{\ensuremath{\mathbb{R}}} 
-\newcommand{\IZ}{\ensuremath{\mathbb{Z}}} 
-\newcommand{\IN}{\ensuremath{\mathbb{N}}} 
-\newcommand{\IQ}{\ensuremath{\mathbb{Q}}} 
+\newcommand{\IR}{\ensuremath{\mathbb{R}}}
+\newcommand{\IZ}{\ensuremath{\mathbb{Z}}}
+\newcommand{\IN}{\ensuremath{\mathbb{N}}}
+\newcommand{\IQ}{\ensuremath{\mathbb{Q}}}
 
 \newcommand{\ceil}[1]{{\left\lceil{#1}\right\rceil}}
 \newcommand{\floor}[1]{{\left\lfloor{#1}\right\rfloor}}
@@ -116,13 +118,12 @@
 
 \newcommand{\cpx}[1]{\mathcal{O}(#1)}
 \newcommand{\sets}[2]{#1 = \{{#2}_1,{#2}_2,\ldots,{#2}_{|#1|}\}}
-\newcommand{\nphard}{ اٍن‌پی-سخت }
+\newcommand{\nphard}{ اِن‌پی-سخت }
 \newcommand{\apxhard}{ تقریب-سخت }
 \newcommand{\ktransmitter}[1]{ #1-فرستنده }
 
 
 \newcommand{\درج‌شکل}[3]
-	{\begin{figure}[t] \centering \includegraphics[width=#1cm]{figures/#3} 
-	\caption{#2} \label{شکل:#3} 
+	{\begin{figure}[t] \centering \includegraphics[width=#1cm]{figures/#3}
+	\caption{#2} \label{شکل:#3}
 	\end{figure}}
-

@@ -3,7 +3,7 @@
 %  Custom Definitions
 % -------------------------------------------------------
 
-
+\usepackage{float}
 \newcommand{\OPT}{\ensuremath{\mbox{\rm OPT}}}
 \newcommand{\opt}{\ensuremath{\mbox{\rm opt}}}
 \newcommand{\APX}{\ensuremath{\mbox{\rm APX}}}
@@ -26,11 +26,11 @@
 \newenvironment{الگوریتم‌بلند}[2]{
 	\refstepcounter{myalg}
 	\bigskip \medskip
-	\hrule height .06em 
+	\hrule height .06em
 	\vspace{.1em}
 	\noindent\textbf{الگوریتم~\arabic{myalg} \ } #1 \label{#2}
 	\vspace{.3em}
-	\hrule height .07em 
+	\hrule height .07em
 	\vspace{-.5em}
 	\begin{enumerate}[label={\arabic*},itemsep=.1em, parsep=.1em]
 }{
@@ -40,4 +40,13 @@
 	\hrule height .06em
 	\bigskip
 }
+
+\floatstyle{ruled}
+\newfloat{program}{t}{lop}
+\floatname{program}{الگوریتم}
+
+
+
+
+
 

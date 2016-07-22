@@ -5,15 +5,27 @@
 
 
 \pagestyle{empty}
-
 \begin{latin}
+  \textbf{Abstract}
+In some of object recognition problems, labeled data may not be available for all categories.
+ Zero-shot learning utilizes auxiliary information (also called signatures)
+ describing each category in order to find a classifier that can recognize samples
+from categories with no labeled instance. %RR It is usually only unseen classes
+On the other hand, with recent advances made by deep neural networks in computer vision, a rich representation can be obtained from images
+that discriminates different categorizes and therefore a obtaining unsupervised information from images is made possible.
+However in the previous works, little attention has been paid to using such unsupervised information for task of zero-shot learning.
+In this work, we first propose a multi-task neural network to predict attributes from images while exploiting this unsupervised information
+in order to mitigate the so called \textit{domain shift problem} in predictions on unseen data.
+We also propose a novel semi-supervised zero-shot learning method that works on an embedding space corresponding to
+abstract deep visual features. We seek a linear transformation on signatures to map them onto the visual features,
+such that the mapped signatures of the seen classes are close to labeled samples of the corresponding
+classes and unlabeled data are also close to the mapped signatures of one of the unseen classes.
+ We use the idea that the rich deep visual features provide a representation
+ space in which samples of each class are usually condensed in a cluster. The effectiveness of the proposed method is demonstrated through extensive
+experiments on four public benchmarks improving the state-of-the-art prediction accuracy on three of them.
 
-\begin{center}
-\textbf{Abstract}
-\end{center}
-\baselineskip=.8\baselineskip
 \bigskip\noindent\textbf{Keywords}:
-Timetabling, School Timetabling Problem, Personnel Scheduling
+Zero-shot Learning, Semi-supervised Learining, Deep Learning, Representation Learning.
 \end{latin}
 
 \newpage

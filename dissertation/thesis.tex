@@ -13,6 +13,7 @@
 \input{styles/custom.tex}
 \usepackage{dsfont}
 \input{styles/commands.tex}
+\input{front/glossary.tex}
 \begin{document}
 
 % -------------------- Front Pages --------------------
@@ -39,6 +40,7 @@
 \tableofcontents \newpage
 \listoffigures \newpage
 \listoftables \newpage
+\printabbreviation \newpage
 
 
 % -------------------- Chapters --------------------
@@ -58,13 +60,10 @@
 
 \renewcommand{\bibname}{\rl{کتاب‌نامه} }
 \input{bibs/bibs.tex}
-
+\printglossary
 
 % -------------------- Back Pages --------------------
-
-
 \newgeometry{left=3cm,right=2.5cm}
-
 \input{front/abstract-english.tex}
 %-@@@@@@@@@@@@@@@@@@@@@@2-Uncmment:@@@@@@@@@@@@@@@@@@@@@
 \input{front/info-english.tex}

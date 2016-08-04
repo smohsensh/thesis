@@ -40,12 +40,13 @@
 \tableofcontents \newpage
 \listoffigures \newpage
 \listoftables \newpage
-\printabbreviation \newpage
+
 
 
 % -------------------- Chapters --------------------
-\captionsetup[figure]{font={footnotesize, it}}
-\captionsetup[subfigure]{font={footnotesize, it}}
+\captionsetup[figure]{font={small, it}}
+\captionsetup[subfigure]{font={small, it}}
+\captionsetup[table]{font={small, it}}
 
 \pagenumbering{arabic}
 \include{chapters/1}
@@ -61,7 +62,7 @@
 \renewcommand{\bibname}{\rl{کتاب‌نامه} }
 \input{bibs/bibs.tex}
 \printglossary
-
+%\printabbreviation \newpage
 % -------------------- Back Pages --------------------
 \newgeometry{left=3cm,right=2.5cm}
 \input{front/abstract-english.tex}

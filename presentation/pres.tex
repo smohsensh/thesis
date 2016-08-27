@@ -59,7 +59,7 @@ Summer 2016
 
 
 \begin{frame}
-  \frametitle{Agenda}
+  \frametitle{Plan}
   \tableofcontents
 \end{frame}
 
@@ -196,7 +196,22 @@ Most existing solutions for Zero-shot learning consist of these three steps:
 \end{itemize}
 \end{frame}
 
-\begin{frame}\frametitle{Semi-supervised Zero-shot Learning}
+\section{Semi-supervised Zero-shot Learning}
+\label{sec:Semi-supervised Zero-shot Learning}
+\begin{frame}\frametitle{Domain shift problem}
+  \begin{itemize}
+    \item Attributes are represented with different visual features in different classes.
+    \item Mapping Learned on seen classes would not do as good on unseen classes.
+
+    \begin{figure}
+      \centering
+      \includegraphics[width=6cm]{domain-shift.png}
+      \caption{\scriptsize
+      Different visual representation of attribute ``has tail'' \cite{Fu2014}.
+      }
+    \end{figure}
+  \end{itemize}
+
 \end{frame}
 
 \section{Proposed Methods}
@@ -330,47 +345,185 @@ softmax(\mathbf{z})_j = \frac{e^{\mathbf{z}_j}}{\sum_k e^{\mathbf{z}_k}}, \quad 
 \end{figure}
 \end{frame}
 
-\subsection{Custering and Linear Embedding}
+\subsection{Independent Clustering and Embedding (IEaC)}
 \label{sub:Custering and Linear Embedding}
-\begin{frame}\frametitle{Custering and Linear Embedding}
-  \textbf{Observation:} 
+\begin{frame}\frametitle{Independent Clustering and Embedding (IEaC)}
+  \textbf{Observation:}  There is a clustering structure in image space \\
+  when features are extracted using Deep CNNs.
+  \begin{figure}
+\includegraphics[width=6cm]{awa_clusters}
+\caption{\scriptsize Samples of unseen classes from AwA dataset. Classes are shown in colors.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Independent Clustering and Embedding (IEaC)}
+  Motivated by this observation we propose a novel compatibility function for Zero-shot learning:
+  \begin{enumerate}
+    \item Cluster test samples to $n_u$ clusters.
+    \item Assign each cluster to an unseen class.
+    \item All items in a cluster inherit the label received by cluster
+  \end{enumerate}
+  We have used two variation for the second step:
+  \begin{itemize}
+    \item Classify all samples and then use majority vote:
+    \\ used on output of two previous methods.
+    \item Classify just cluster centers.
+    \\ we will present a method for this in Section \ref{seac}
+  \end{itemize}
 \end{frame}
 
 
 
+\begin{frame}\frametitle{Independent Clustering and Embedding (IEaC)}
+To assing label to cluster centers $\mu_k$ we propose:
+\begin{itemize}
+  \item Embed class signatures to image space using linear mapping $D$ from:
+  \begin{equation} \label{eq:d_definition}
+  D = \argmin_D \normf{X_s - D Z_s}^2 + \alpha \normf{D}^2.
+\end{equation}
+$X_s$: matrix of train samples, $Z_s$ true attribute vector for samples in $X_s.$
+\item Assign each $\mu_k$ to an unseen class using:
+\begin{equation}
+\label{eq:simple_assignment}
+\ell(\boldsymbol{\mu_k}) = \argmin_{u=1,\ldots,n_u} \normf{\boldsymbol{\mu_k} - D\mathbf{c}_{u}}^2
+\end{equation}\end{itemize}
+\end{frame}
 
 
-\subsection{joining picture and lists}
 
-% \begin{frame}
-% \frametitle{pictures and lists in beamer class}
-% \begin{columns}
-% \begin{column}{5cm}
-% \begin{itemize}
-% \item<1-> subject 1
-% \item<3-> subject 2
-% \item<5-> subject 3
-% \end{itemize}
-% \vspace{3cm}
-% \end{column}
-% \begin{column}{5cm}
-% \begin{overprint}
-% \includegraphics<2>{PIC1}
-% \includegraphics<4>{PIC2}
-% \includegraphics<6>{PIC3}
-% \end{overprint}
-% \end{column}
-% \end{columns}
-% \end{frame}
+\begin{frame}\frametitle{A Sermi-Supervised Clustering Algorithm}
+  Performance of proposed compatibility function depends on clustering.\\
+  We present a semi-supervised clustering algorithm matching assumptions of Zero-shot Learning. \\
+  Formulated with an Optimization Problem:
+  \begin{equation} \label{eq:my_clustering}
+\min_{R, \boldsymbol{\mu_1, \ldots, \mu_k }} \sum_{n=1}^{N_s + N_u}  \sum_{k} r_{nk} \normtwo{\mathbf{x_n} - \boldsymbol{\mu_k}} +
+ \beta \sum_{n=1}^{N_s} \mathds{1}(\mathbf{r_n} \neq \mathbf{y_n}).
+\end{equation}
+The first term is inherited from k-means clustering \\
+\vspace{1mm}
+The second term produces a penalty of $\beta$ if a labeled instance from seen classes
+is assigned to cluster with different number.
+\end{frame}
 
+\begin{frame}\frametitle{Joint Embedding and Clustering (JEaC)}
+In the previous method:
+\begin{itemize}
+  \item Classification Accuracy is bottlenecked by the clustering accuracy.
+  \item Separate learning mapping and mapping prevents information flow.
+  \item Each one is learned with a different criteria
+\end{itemize}
+To over come this shortcomings, we propose a \textit{Joint Embedding and Clustering} method.
+\end{frame}
+\begin{frame}\frametitle{Joint Embedding and Clustering}
+The method is formulated as:
+\begin{align}
+\label{eq:joint}
+ \min_{R,D} \normf{X_s - D Z_s}^2  &+ \lambda \normf{X_u - D C_u R^T }^2 + \eta \normf{D}^2, \\
+   s.t. \quad & R \in \{0,1\}^{N_u \times n_u}. \nonumber
+\end{align}
+\begin{itemize}
+  \item
+  The first term is same as in Eq. \eqref{eq:d_definition}.
+  \item
+  The second term is essentially a clustering criteria. this will be more clear if re-written as:
+  \[
+  \label{eq:essentialy_clustering}
+\sum_{n=N_s+1}^{N_s + N_u} \sum_{k=1}^{n_u} r_{nk} \normtwo{\mathbf{x_n} - D \mathbf{c_k}}.
+  \]
+\end{itemize}
+\end{frame}
 
-\subsection{pictures which need more space}
-\begin{frame}[plain]
-% \frametitle{plain, or a way to get more space}
-% \begin{figure}
-% \includegraphics[scale=0.5]{PIC1}
-% \caption{show an example picture}
-% \end{figure}
+\section{Experimental Results}
+\label{sec:Experimental Results}
+
+\begin{frame}\frametitle{Experimental Results}
+  \begin{center}
+  {\scriptsize
+  \begin{tabular}{|l|c|c|c|c|}
+  \hline
+  method  & AwA & CUB-2011 & aPY & SUN \\
+  \hline
+
+    {\tiny \cite{li15max}}                 &  $38.2 \pm 2.3$   &    -             &  -                       & $18.9 \pm 2.5$ \\
+   {\tiny \cite{semi15}}                    &  $40.05\pm 2.25$ &       -          &   $24.71 \pm 3.19$       & -    \\
+    {\tiny \cite{jayaraman14}}  & $43.01 \pm 0.07$ &       -          & $26.02 \pm 0.05$        & $56.18 \pm 0.27$ \\
+  \hline
+   {\tiny \cite{Akata2015}}              & $66.7$          & $50.1$            &         -                & -\\
+  %& {Changpinyo \textit{et al.}}~\cite{Synthesized}       & $72.9$           & $54.5$            &                         & $62.7$ \\
+   {\tiny \cite{Xian2016}}                & $71.9$            & $45.5$            &        -                 & -\\
+  \hline
+  {\tiny \cite{Kodirov2015}}
+                                              & $73.2$            &  $39.5$           & $26.5$                    &  -\\
+   {\tiny \cite{Akata2015}}              & $61.9$            &  $50.1$           &                 -        & -\\
+    {\tiny \cite{sse}}            &  $76.33 \pm 0.53$ & $30.41 \pm 0.20$ &   $46.23 \pm 0.53$      & $82.50 \pm 1.32$    \\
+   {\tiny \cite{agnostic} }      &  $80.46 \pm 0.53$ & $42.11 \pm 0.55$ &   \textbf{$\mathbf{50.35 \pm 2.97}$}      & $83.83 \pm 0.29$    \\
+    {\tiny proposed (mapping to histograms)}
+                          & $76.50 \pm 1.02$               & $33.29 \pm 0.21$              & $47.46 \pm 0.31$              & $79.88 \pm 0.42$ \\
+   {\tiny proposed( IEaC +  {k-means})}
+                            & $86.34 \pm 0.13$               & $52.48 \pm 0.60$              & $48.03 \pm 1.56$              & $75.75 \pm 1.06$ \\
+   {\tiny proposed (IEaC - semisupervised)}
+                          & $86.38 \pm 0.56$              & $ 53.10\pm 0.43 $             & $48.52 \pm 0.29$              &$ 80.66 \pm 0.76$ \\
+   {\tiny proposed (JEaC- init D)}
+                       & $83.03$                        & $57.55$                       & $42.62$          & $72.50$\\
+   {\tiny roposed (JEaC - init R)}
+                       & \textbf{\em $\mathbf{88.64 \pm 0.04}$}  & \textbf{\em $\mathbf{58.80 \pm 0.64}$} & $49.77 \pm 2.02$ & \textbf{\em $\mathbf{86.16 \pm 0.57}$} \\
+  \hline
+  \end{tabular}
+  }
+\end{center}
+
+\end{frame}
+
+\subsection{Discussion}
+\label{sub:Discussion}
+\begin{frame}\frametitle{Discussion}
+  In IEaC:
+  \begin{itemize}
+    \item Using proposed clustering function based on clustering performs better than nearest neighbor compatibility.
+    \item This is by taking in account the  unsupervised information available in images space.
+  \end{itemize}
+  In JEaC:
+  \begin{itemize}
+    \item Keeps Strong points in IEaC
+    \item Jointly learning cluster assignments and linear mapping improves results.
+    \item Considers good clustering while learning the mapping.
+    \item Considers proximity of cluster centers and mapping of signatures while assigning clusters.
+    \item This mitigates Domain-shift problem
+  \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Demonstrating on Real Data}
+\begin{figure}
+  \hfill
+  \subfigure[{\tiny seen/unseen}]{\includegraphics[width=3cm]{none}}
+  \hfill
+  \subfigure[{\tiny ground truth}]{\includegraphics[width=3cm]{truth}}
+  \hfill
+  \subfigure[{\tiny nearest neighbor compabtibility}]{\includegraphics[width=3cm]{knn}}
+  \hfill
+  \subfigure[{\tiny IEaC (k-means)}]{\includegraphics[width=3cm]{kmeans}}
+  \hfill
+  \subfigure[{\tiny IEaC (semi-supervised)}]{\includegraphics[width=3cm]{own_cluster}}
+  \hfill
+  \subfigure[{\tiny JEaC}]{\includegraphics[width=3cm]{jeac}}
+  \hfill
+\end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Conclusion}
+  In this presentation we:
+  \begin{itemize}
+    \item introduced the problem of zero-shot learning
+    \item categorized and reviewed a selection on prior works
+    \item proposed a Deep Neural network to predict attributes from images.
+    \item proposed a Deep Neural network to map images to histogram of seen classes
+    \item proposed a novel compatibility function and semi-supervised algorithm for Zero-shot learning.
+    \item used above propositions in an Independent Clustering and Embedding method
+    \item extended our Independent Clustering and Embedding to do this steps jointly.
+    \item Demonstrated performance of our methods through experiments.
+    \item Discussed effect of different parts in our models by experimenting on a real dataset.
+  \end{itemize}
 \end{frame}
 \begin{frame}[allowframebreaks]
         \frametitle{References}

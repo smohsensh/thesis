@@ -37,6 +37,7 @@
  \tableofcontents[currentsection]
  \end{frame}
 }
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%55
 \begin{document}
 \title{Deep Zero-Shot Learning}
@@ -68,7 +69,7 @@ Summer 2016
 \begin{frame}
   \frametitle{Introduction}
     \subsection{Standard Learning Paradigm}
-    \textbf{Standard Learning Paradigm:}
+    \textbf{Standard Supervised Learning Paradigm:}
     Discover the pattern for each class from abundant labeled samples.
     \begin{itemize}
       \item Using SVM, Decision Tree, KNN, etc.
@@ -105,6 +106,7 @@ Summer 2016
     \item Text Articles
     \item Category Names
   \end{itemize}
+  \item Signatures exist for all classes.
 \end{itemize}
 \end{frame}
 \begin{frame}\frametitle{Extening the Standard Paradigm}
@@ -150,14 +152,15 @@ Summer 2016
 \label{sub:Solution Steps}
 
 \begin{frame}\frametitle{Solution Steps}
-Most existing solutions for Zero-shot learning consist of these three steps:
-\begin{enumerate}
+Most existing solutions for zero-shot learning consist of these three steps:
+\begin{enumerate} \pause
 \item Embed images in a semantic space \pause
 \item Embed class signatures to same semantic space \pause
 \item Assign images to those classes (e.g. using nearest neighbor classifier)
 \end{enumerate}
 \end{frame}
 \section{Prior Works}
+\subsection{A categorization of existing methods}
 \label{sec:Prior Works}
 \begin{frame}\frametitle{Prior Works}
   Existing works can be categorized by the semantic space they use:
@@ -168,20 +171,21 @@ Most existing solutions for Zero-shot learning consist of these three steps:
   \end{itemize}
   We review some selected works from each category.
 \end{frame}
-
-\subsection{Attribute Prediction}
+\subsubsection{Attribute Prediction}
 \begin{frame}\frametitle{Attribute Prediction}
   \begin{itemize}
-    \item A large body of work in Zero-shot learning belongs to this category.
+    \item A large body of work in zeroshot learning belongs to this category.
     \item The mapping from signature space is considered identity mapping.
     \item Attribute Estimator/Classifier are learned on train images (standard supervised problem).
     \item The Estimator/Classifier is used on test images to find $\mathbf{c}^{\ast}_i$ for image $\mathbf{x}_i$
     \item $\mathbf{x}_i$ is assigned to class with most similar signature:
     $$ \ell(\mathbf{x}_i) = \argmin_{j=n_s+1 \ldots, n_s + n_u} distance(\mathbf{c}^{\ast}_i, \mathbf{c}_j) $$
   \end{itemize}
+
+  Examples from this category include: \cite{akata13,jayaraman14,lampert09}
 \end{frame}
 
-\subsection{Mapping to image space}
+\subsubsection{Mapping to image space}
 \begin{frame}
   \frametitle{Mapping to Image Space}
 \begin{itemize}
@@ -194,15 +198,42 @@ Most existing solutions for Zero-shot learning consist of these three steps:
       \ell(\mathbf{x}) = \argmax_{j=n_s+1 \ldots, n_s + n_u} \langle \phi(\mathbf{c}_j), \mathbf{x} \rangle
     \end{equation}
 \end{itemize}
+
+Examples from this category include: \cite{elhoseiny2015,Reed2016}
 \end{frame}
 
-\section{Semi-supervised Zero-shot Learning}
+\subsubsection{Mapping to a middle space}
+\begin{frame}
+  \frametitle{Mapping to a middle Space}
+\begin{itemize}
+    \item In training time  mappings $ \theta(\mathbf{c})$ and $\phi(\mathbf{x})$ are learned.
+    \item The mapping should map image $\mathbf{x}$ close to its true signature $\mathbf{c}$
+    \item And with a margin from other signatures.
+    \item In this way we expect $\theta$ and $\phi$ to map signature and samples of same unseen classes also close to each other. \pause
+    \item Space of seen classes has been a successful choice for middle space \pause
+    \item Bilinear mappings fall into this category too.
+\end{itemize}
+\pause
+Examples from this category include: \cite{ba2015,Reed2016}
+\end{frame}
+
+\subsection{Semi-supervised Zero-shot Learning}
 \label{sec:Semi-supervised Zero-shot Learning}
+\begin{frame}\frametitle{Semi-supervised Zero-shot Learning}
+\begin{itemize}
+  \item Use Unsupervised information in structure of unlabeled images.
+  \item This information helps finding better mappings \pause
+  \item Semi-supervised methods can alleviate \textit{domain shift problem} by using unlabeled samples.
+\end{itemize}
+\vspace{1cm}
+\pause
+Examples include: \cite{semi15,li15max,Kodirov2015,Fu2014}
+\end{frame}
+
 \begin{frame}\frametitle{Domain shift problem}
   \begin{itemize}
     \item Attributes are represented with different visual features in different classes.
     \item Mapping Learned on seen classes would not do as good on unseen classes.
-
     \begin{figure}
       \centering
       \includegraphics[width=6cm]{domain-shift.png}
@@ -211,19 +242,19 @@ Most existing solutions for Zero-shot learning consist of these three steps:
       }
     \end{figure}
   \end{itemize}
-
 \end{frame}
+
 
 \section{Proposed Methods}
 \begin{frame}\frametitle{Proposed Methods}
-Here we present four proposed methods for the problem of Zero-shot Image Classification.
+Here we present four proposed methods for the problem of zero-shot Image Classification.
 
 In our methods we consider class signatures of type attribute vectors.
 
 \begin{itemize}
   \item Attribute Prediction with Multi-task Deep Neural Networks.
   \item Mapping to Histograms of Seen Classes with Deep Neural Network.
-  \item Embedding and Clustering
+  \item Independent Embedding and Clustering
   \item Joint Embedding and Clustering
 \end{itemize}
 \end{frame}
@@ -236,7 +267,7 @@ In our methods we consider class signatures of type attribute vectors.
 \begin{itemize}
   \item  predicts for train and test images at the same time (hence multi-task).
   \item can mitigate the domain shift problem that appears when only samples from seen classes is used.
-  \item uses 16 convolutional layers from famous VGG-19 network \cite{vgg}  for feature extraction.
+  \item uses 17 layers from famous VGG-19 network \cite{vgg}  for feature extraction.
   \item is trained fast using Stochastic gradient descent algorithms family.
 \end{itemize}
 \end{frame}
@@ -251,11 +282,18 @@ In our methods we consider class signatures of type attribute vectors.
 \label{eq:nn_loss}
 \minimize_{f}
 \frac{1}{N_s} \sum_{i=1}^{N_s} loss(\mathbf{\hat{c}}_i, \mathbf{c}_{y_i}) +
-\frac{\gamma}{N_u} \sum_{i=N_s}^{N_s+N_u} \Big ( \min_{j=n_s,\ldots,n_s + n_u} \normtwo{\mathbf{\hat{c}_i - c_j}} \Big ).
+\frac{\gamma}{N_u} \sum_{i=N_s}^{N_s+N_u} \Big ( \min_{j=n_s,\ldots,n_s + n_u} loss(\mathbf{\hat{c}_i , c_j}) \Big ).
 \end{equation}
 The second term enforces that prediction for test samples to be close to an unseen class signature
 
 Therefore, mitigating domain-shift problem
+\end{frame}
+
+\begin{frame}\frametitle{Multi-task Neural Network}
+  \begin{figure}
+  \includegraphics[scale=0.4]{net}
+  \caption{Proposed Multi-task network Architecture}
+  \end{figure}
 \end{frame}
 
 \begin{frame}\frametitle{Multi-task Neural Network}
@@ -272,11 +310,35 @@ r(\mathbf{z}) &= \min_{j=1\ldots n_u} (\mathbf{z})_j.
   \item This is exactly same as the second term in Eq. \eqref{eq:nn_loss}
 \end{itemize}
 \end{frame}
-\begin{frame}\frametitle{Multi-task Neural Network}
-  \begin{figure}
-  \includegraphics[scale=0.4]{net}
-  \caption{Proposed Multi-task network Architecture}
-  \end{figure}
+
+
+\begin{frame}\frametitle{Comparison with other attribute prediction methods}
+{\scriptsize
+\begin{table}
+  \caption{Multi-calss accuracy in form of average $\pm$ std}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+method  & AwA & CUB-2011 & aPY & SUNA \\
+\hline \hline
+ {\tiny \cite{jayaraman14}}  & $43.01 \pm 0.07$ &        -         & $26.02 \pm 0.05$        & $56.18 \pm 0.27$ \\
+\hline
+{\tiny \cite{lampert09}} 	&$41.4$ &	-	& 	$19.1$	& $22.2 \pm 1.6$ \\
+\hline
+{\tiny  \cite{lampert09}} 	&$42.2$ &	-	& 	$16.9$	& $18.0 \pm 1.5$ \\
+\hline
+{\tiny \cite{akata13}} 	&$37.4$ &	$18.0$& 	-	& - \\
+\hline
+{\tiny Baseline network (1 layer)}
+                      & {${56.78 \pm 1.29}$}  & {${32.60 \pm 0.82}$} & $24.57 \pm 1.36$ & { ${58.33 \pm 1.52}$} \\ \hline
+{\tiny Baseline network (2 layer)}
+                      & {${52.14 \pm 0.31}$}  & {${31.65 \pm 0.41}$} & {${22.56 \pm 1.29}$} & { ${62.00 \pm 2.64}$} \\ \hline
+{\tiny Multi-task network (1 layer)}
+                      & {$\mathbf{74.52 \pm 1.93}$}  & {$\mathbf{33.91 \pm 0.21}$} & $\mathbf{33.10 \pm 1.36}$ & { $\mathbf{66.13 \pm 0.50}$} \\ \hline
+{\tiny Multi-task network (2 layers)}
+                      & {${57.10 \pm 0.47}$}  & {${31.27 \pm 0.87}$} & {${22.32 \pm 0.48}$} & { ${66.83 \pm 1.52}$} \\ \hline
+\end{tabular}
+\end{table}
+}
 \end{frame}
 
 %================================================================================
@@ -296,16 +358,23 @@ r(\mathbf{z}) &= \min_{j=1\ldots n_u} (\mathbf{z})_j.
 \end{itemize}
 \end{frame}
 
-\begin{frame} \frametitle{Mapping to Histogram of Seen Classes}
-  \begin{itemize}
-    \item
-  The network  has a standard sequential architecture consisting of 17 pre-trained layers from VGG-19 and four other fully connected layers. \\
-  \item
-  Size of last layer is equal to the number of seen categories.
-  \item
-  Let $\phi$ denote the mapping modeled by the network
-\end{itemize}
+\begin{frame}\frametitle{Mapping to Histogram of Seen Classes}
+  \begin{figure}
+  \includegraphics[scale=0.4]{hist_net}
+  \caption{Proposed network architecture for mapping to histograms}
+  \end{figure}
 \end{frame}
+
+% \begin{frame} \frametitle{Mapping to Histogram of Seen Classes}
+%   \begin{itemize}
+%     \item
+%   The network  has a standard sequential architecture consisting of 17 pre-trained layers from VGG-19 and four other fully connected layers. \\
+%   \item
+%   Size of last layer is equal to the number of seen categories.
+%   \item
+%   Let $\phi$ denote the mapping modeled by the network
+% \end{itemize}
+% \end{frame}
 
 
 \begin{frame}\frametitle{Mapping to Histogram of Seen Classes}
@@ -318,6 +387,7 @@ r(\mathbf{z}) &= \min_{j=1\ldots n_u} (\mathbf{z})_j.
 softmax(\mathbf{z})_j = \frac{e^{\mathbf{z}_j}}{\sum_k e^{\mathbf{z}_k}}, \quad j = 1, \ldots, n_s.
 \end{equation}
   \item Training criteria is correct label prediction of labeled samples.
+  \item   Let $\phi$ denote the mapping modeled by the network
   \begin{equation}
   \minimize_{\phi} \sum_{i=1}^{N_s} \sum_{j=1}^{n_s} (\mathbf{y}i)_j \times log(\phi(\mathbf{x}_i)_j) + (1- (\mathbf{y}i)_j) \times log(1 - \phi(\mathbf{x}_i)_j)
 \end{equation}
@@ -335,7 +405,6 @@ softmax(\mathbf{z})_j = \frac{e^{\mathbf{z}_j}}{\sum_k e^{\mathbf{z}_k}}, \quad 
 \item The softmax layer is trained to produce distribution of true label which is a discrete delta function.
 \item When setting $T > 1$ the output becomes smoother.
 \end{itemize}
-%
 \begin{figure}
 \hfill
 \subfigure[$T=1$]{\includegraphics[width=4cm]{softmax}}
@@ -345,9 +414,22 @@ softmax(\mathbf{z})_j = \frac{e^{\mathbf{z}_j}}{\sum_k e^{\mathbf{z}_k}}, \quad 
 \end{figure}
 \end{frame}
 
-\subsection{Independent Clustering and Embedding (IEaC)}
+
+\begin{frame} \frametitle{Mapping to Histogram of Seen Classes}
+  \begin{itemize}
+    \item Singanures are mapped to space of histogram by similarity of their signatures to signature of seen classes:
+    \begin{equation}
+   \theta_j(\mathbf{c}) = \frac{1}{\norm{\mathbf{c - c_j}}_2  }, \quad j=1,\ldots, n_s.
+   \end{equation}
+\end{itemize}
+\end{frame}
+
+%
+
+
+\subsection{Independent Embedding and Clustering (IEaC)}
 \label{sub:Custering and Linear Embedding}
-\begin{frame}\frametitle{Independent Clustering and Embedding (IEaC)}
+\begin{frame}\frametitle{Independent Embedding and Clustering (IEaC)}
   \textbf{Observation:}  There is a clustering structure in image space \\
   when features are extracted using Deep CNNs.
   \begin{figure}
@@ -356,10 +438,10 @@ softmax(\mathbf{z})_j = \frac{e^{\mathbf{z}_j}}{\sum_k e^{\mathbf{z}_k}}, \quad 
   \end{figure}
 \end{frame}
 
-\begin{frame}\frametitle{Independent Clustering and Embedding (IEaC)}
-  Motivated by this observation we propose a novel compatibility function for Zero-shot learning:
+\begin{frame}\frametitle{Independent Embedding and Clustering (IEaC)}
+  Motivated by this observation we propose a novel compatibility function for zero-shot learning:
   \begin{enumerate}
-    \item Cluster test samples to $n_u$ clusters.
+    \item Cluster test samples.
     \item Assign each cluster to an unseen class.
     \item All items in a cluster inherit the label received by cluster
   \end{enumerate}
@@ -368,13 +450,13 @@ softmax(\mathbf{z})_j = \frac{e^{\mathbf{z}_j}}{\sum_k e^{\mathbf{z}_k}}, \quad 
     \item Classify all samples and then use majority vote:
     \\ used on output of two previous methods.
     \item Classify just cluster centers.
-    \\ we will present a method for this in Section \ref{seac}
+    \\ we will present a method for this type.
   \end{itemize}
 \end{frame}
 
 
 
-\begin{frame}\frametitle{Independent Clustering and Embedding (IEaC)}
+\begin{frame}\frametitle{Independent Embedding and Clustering (IEaC)}
 To assing label to cluster centers $\mu_k$ we propose:
 \begin{itemize}
   \item Embed class signatures to image space using linear mapping $D$ from:
@@ -391,19 +473,9 @@ $X_s$: matrix of train samples, $Z_s$ true attribute vector for samples in $X_s.
 
 
 
-\begin{frame}\frametitle{A Sermi-Supervised Clustering Algorithm}
-  Performance of proposed compatibility function depends on clustering.\\
-  We present a semi-supervised clustering algorithm matching assumptions of Zero-shot Learning. \\
-  Formulated with an Optimization Problem:
-  \begin{equation} \label{eq:my_clustering}
-\min_{R, \boldsymbol{\mu_1, \ldots, \mu_k }} \sum_{n=1}^{N_s + N_u}  \sum_{k} r_{nk} \normtwo{\mathbf{x_n} - \boldsymbol{\mu_k}} +
- \beta \sum_{n=1}^{N_s} \mathds{1}(\mathbf{r_n} \neq \mathbf{y_n}).
-\end{equation}
-The first term is inherited from k-means clustering \\
-\vspace{1mm}
-The second term produces a penalty of $\beta$ if a labeled instance from seen classes
-is assigned to cluster with different number.
-\end{frame}
+
+\subsection{Joint Embedding and Clustering (JEaC)}
+\label{sec:Joint Embedding and Clustering (JEaC)}
 
 \begin{frame}\frametitle{Joint Embedding and Clustering (JEaC)}
 In the previous method:
@@ -446,7 +518,6 @@ The method is formulated as:
 
     {\tiny \cite{li15max}}                 &  $38.2 \pm 2.3$   &    -             &  -                       & $18.9 \pm 2.5$ \\
    {\tiny \cite{semi15}}                    &  $40.05\pm 2.25$ &       -          &   $24.71 \pm 3.19$       & -    \\
-    {\tiny \cite{jayaraman14}}  & $43.01 \pm 0.07$ &       -          & $26.02 \pm 0.05$        & $56.18 \pm 0.27$ \\
   \hline
    {\tiny \cite{Akata2015}}              & $66.7$          & $50.1$            &         -                & -\\
   %& {Changpinyo \textit{et al.}}~\cite{Synthesized}       & $72.9$           & $54.5$            &                         & $62.7$ \\
@@ -456,17 +527,18 @@ The method is formulated as:
                                               & $73.2$            &  $39.5$           & $26.5$                    &  -\\
    {\tiny \cite{Akata2015}}              & $61.9$            &  $50.1$           &                 -        & -\\
     {\tiny \cite{sse}}            &  $76.33 \pm 0.53$ & $30.41 \pm 0.20$ &   $46.23 \pm 0.53$      & $82.50 \pm 1.32$    \\
-   {\tiny \cite{agnostic} }      &  $80.46 \pm 0.53$ & $42.11 \pm 0.55$ &   \textbf{$\mathbf{50.35 \pm 2.97}$}      & $83.83 \pm 0.29$    \\
+   {\tiny \cite{agnostic} }      &  $80.46 \pm 0.53$ & $42.11 \pm 0.55$ &   \textbf{$\mathbf{50.35 \pm 2.97}$}      & \underline{$83.83 \pm 0.29$}    \\
     {\tiny proposed (mapping to histograms)}
                           & $76.50 \pm 1.02$               & $33.29 \pm 0.21$              & $47.46 \pm 0.31$              & $79.88 \pm 0.42$ \\
-   {\tiny proposed( IEaC +  {k-means})}
+   {\tiny proposed( IEaC -  {k-means})}
                             & $86.34 \pm 0.13$               & $52.48 \pm 0.60$              & $48.03 \pm 1.56$              & $75.75 \pm 1.06$ \\
    {\tiny proposed (IEaC - semisupervised)}
-                          & $86.38 \pm 0.56$              & $ 53.10\pm 0.43 $             & $48.52 \pm 0.29$              &$ 80.66 \pm 0.76$ \\
+                          & \underline{$86.38 \pm 0.56$}              & \underline{$ 53.10\pm 0.43 $}             & $48.52 \pm 0.29$              &$ 80.66 \pm 0.76$ \\
    {\tiny proposed (JEaC- init D)}
                        & $83.03$                        & $57.55$                       & $42.62$          & $72.50$\\
    {\tiny roposed (JEaC - init R)}
-                       & \textbf{\em $\mathbf{88.64 \pm 0.04}$}  & \textbf{\em $\mathbf{58.80 \pm 0.64}$} & $49.77 \pm 2.02$ & \textbf{\em $\mathbf{86.16 \pm 0.57}$} \\
+                       & \textbf{\em $\mathbf{88.64 \pm 0.04}$}  & \textbf{\em $\mathbf{58.80 \pm 0.64}$} &
+                       \underline{$49.77 \pm 2.02$} & \textbf{\em $\mathbf{86.16 \pm 0.57}$} \\
   \hline
   \end{tabular}
   }
@@ -476,21 +548,21 @@ The method is formulated as:
 
 \subsection{Discussion}
 \label{sub:Discussion}
-\begin{frame}\frametitle{Discussion}
-  In IEaC:
-  \begin{itemize}
-    \item Using proposed clustering function based on clustering performs better than nearest neighbor compatibility.
-    \item This is by taking in account the  unsupervised information available in images space.
-  \end{itemize}
-  In JEaC:
-  \begin{itemize}
-    \item Keeps Strong points in IEaC
-    \item Jointly learning cluster assignments and linear mapping improves results.
-    \item Considers good clustering while learning the mapping.
-    \item Considers proximity of cluster centers and mapping of signatures while assigning clusters.
-    \item This mitigates Domain-shift problem
-  \end{itemize}
-\end{frame}
+% \begin{frame}\frametitle{Discussion}
+%   In IEaC:
+%   \begin{itemize}
+%     \item Using proposed clustering function based on clustering performs better than nearest neighbor compatibility.
+%     \item This is by taking in account the  unsupervised information available in images space.
+%   \end{itemize}
+%   In JEaC:
+%   \begin{itemize}
+%     \item Keeps Strong points in IEaC
+%     \item Jointly learning cluster assignments and linear mapping improves results.
+%     \item Considers good clustering while learning the mapping.
+%     \item Considers proximity of cluster centers and mapping of signatures while assigning clusters.
+%     \item This mitigates Domain-shift problem
+%   \end{itemize}
+% \end{frame}
 
 \begin{frame}\frametitle{Demonstrating on Real Data}
 \begin{figure}
@@ -518,9 +590,9 @@ The method is formulated as:
     \item categorized and reviewed a selection on prior works
     \item proposed a Deep Neural network to predict attributes from images.
     \item proposed a Deep Neural network to map images to histogram of seen classes
-    \item proposed a novel compatibility function and semi-supervised algorithm for Zero-shot learning.
-    \item used above propositions in an Independent Clustering and Embedding method
-    \item extended our Independent Clustering and Embedding to do this steps jointly.
+    \item proposed a novel compatibility function and semi-supervised algorithm for zero-shot learning.
+    \item used above propositions in an Independent Embedding and Clustering method
+    \item extended our Independent Embedding and Clustering to do this steps jointly.
     \item Demonstrated performance of our methods through experiments.
     \item Discussed effect of different parts in our models by experimenting on a real dataset.
   \end{itemize}
@@ -532,4 +604,62 @@ The method is formulated as:
         \bibliography{references.bib}
         }
 \end{frame}
+
+\begin{frame}[noframenumbering]\frametitle{A Sermi-Supervised Clustering Algorithm}
+  Performance of proposed compatibility function depends on clustering.\\
+  We present a semi-supervised clustering algorithm matching assumptions of zero-shot Learning. \\
+  Formulated with an Optimization Problem:
+  \begin{equation} \label{eq:my_clustering}
+\min_{R, \boldsymbol{\mu_1, \ldots, \mu_k }} \sum_{n=1}^{N_s + N_u}  \sum_{k} r_{nk} \normtwo{\mathbf{x_n} - \boldsymbol{\mu_k}} +
+ \beta \sum_{n=1}^{N_s} \mathds{1}(\mathbf{r_n} \neq \mathbf{y_n}).
+\end{equation}
+The first term is inherited from k-means clustering \\
+\vspace{1mm}
+The second term produces a penalty of $\beta$ if a labeled instance from seen classes
+is assigned to cluster with different number.
+\end{frame}
+
+
+\begin{frame}[noframenumbering]\frametitle{Experimental Results for Clustering}
+  \begin{table}[ht]
+  \centering
+    \label{tab:clustering}
+    {\scriptsize
+  \begin{tabular}{|r|c|c|c|c|}
+  \hline
+method & AwA & CUB-2011 & aPY & SUNA \\
+  \hline
+  k-means                             &  ${65.93 \pm 1.73}$                 & ${34.48 \pm 1.00}$           & ${65.37 \pm 3.73 }$               & ${16.83 \pm 0.76 }$   \\
+  \hline
+{\tiny Proposed semi-supervised clustering}
+                        & \textbf{${70.74\pm 0.32}$}  & \textbf{${42.63\pm 0.07}$} & \textbf{${69.93\pm 3.40}$} & \textbf{ ${45.50 \pm 1.32}$} \\
+  \hline
+  \end{tabular}
+  }
+  \vspace{2mm}
+  \end{table}
+\end{frame}
+
+
+\begin{frame}[noframenumbering]\frametitle{Plug Proposed Compatibility Function to other methos}
+  \begin{table}[t]
+\caption{Results for Multi-task Neural Network using two different compatibility functions}
+\label{tab:nn_comp}
+\begin{center}
+  {\footnotesize
+\begin{tabular}{|r|c|c|c|c|}
+\hline
+  & AwA & CUB-2011 & aPY & SUNA \\
+\hline
+Nearest Neighbor
+ %                     & {${73.77}$}  & {${32.52}$} & ${33.10}$ & { ${66.50}$} \\ \hline
+                & {${74.52 \pm 1.93}$}  & {${33.91 \pm 0.21}$} & ${33.10 \pm 1.36}$ & { ${66.13 \pm 0.50}$} \\ \hline
+Proposed Compatibility
+                      & $74.68 \pm 0.73$  & \textbf{${33.92 \pm 0.07}$} & \textbf{${38.26 \pm 1.27}$} & \textbf{ ${67.50 \pm 0.00}$} \\ \hline
+\end{tabular}
+}
+\end{center}
+\end{table}
+\end{frame}
+
 \end{document}

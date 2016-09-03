@@ -421,6 +421,7 @@ softmax(\mathbf{z})_j = \frac{e^{\mathbf{z}_j}}{\sum_k e^{\mathbf{z}_k}}, \quad 
     \begin{equation}
    \theta_j(\mathbf{c}) = \frac{1}{\norm{\mathbf{c - c_j}}_2  }, \quad j=1,\ldots, n_s.
    \end{equation}
+   \item finally prediction can be done using nearest neighbor (or our proposed compatibility function)
 \end{itemize}
 \end{frame}
 
@@ -548,21 +549,7 @@ The method is formulated as:
 
 \subsection{Discussion}
 \label{sub:Discussion}
-% \begin{frame}\frametitle{Discussion}
-%   In IEaC:
-%   \begin{itemize}
-%     \item Using proposed clustering function based on clustering performs better than nearest neighbor compatibility.
-%     \item This is by taking in account the  unsupervised information available in images space.
-%   \end{itemize}
-%   In JEaC:
-%   \begin{itemize}
-%     \item Keeps Strong points in IEaC
-%     \item Jointly learning cluster assignments and linear mapping improves results.
-%     \item Considers good clustering while learning the mapping.
-%     \item Considers proximity of cluster centers and mapping of signatures while assigning clusters.
-%     \item This mitigates Domain-shift problem
-%   \end{itemize}
-% \end{frame}
+
 
 \begin{frame}\frametitle{Demonstrating on Real Data}
 \begin{figure}
@@ -660,6 +647,23 @@ Proposed Compatibility
 }
 \end{center}
 \end{table}
+\end{frame}
+
+
+\begin{frame}\frametitle{Discussion}
+  In IEaC:
+  \begin{itemize}
+    \item Using proposed clustering function based on clustering performs better than nearest neighbor compatibility.
+    \item This is by taking in account the  unsupervised information available in images space.
+  \end{itemize}
+  In JEaC:
+  \begin{itemize}
+    \item Keeps Strong points in IEaC
+    \item Jointly learning cluster assignments and linear mapping improves results.
+    \item Considers good clustering while learning the mapping.
+    \item Considers proximity of cluster centers and mapping of signatures while assigning clusters.
+    \item This mitigates Domain-shift problem
+  \end{itemize}
 \end{frame}
 
 \end{document}

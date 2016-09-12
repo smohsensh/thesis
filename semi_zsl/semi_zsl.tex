@@ -18,12 +18,7 @@
 \frenchspacing
 \setlength{\pdfpagewidth}{8.5in}
 \setlength{\pdfpageheight}{11in}
-% \pdfinfo{
-% /Title (Semi-supervised Zero-Shot Learning by a Clustering-based Approach)
-% /Author (Seyed Mohsen Shojaee and Mahdieh Soleymani Baghshah)}
-% \pdfinfo{
-% /Title (Insert Your Title Here)
-% /Author (Put All Your Authors Here, Separated by Commas)}
+
 \setcounter{secnumdepth}{0}
 \newcommand{\norm}[1]{\left \lVert #1 \right \rVert_{F}^2}
  \newcommand{\etal}{\textit{et al.} }
@@ -35,11 +30,7 @@
 % proceedings, working notes, and technical reports.
 %
 \title{Semi-supervised Zero-Shot Learning by a Clustering-based Approach}
- \author{Seyed Mohsen Shojaee {\normalfont and} Mahdieh Soleymani Baghshah\\
- Sharif University of Technology \\
- Tehran, Iran\\
- {\tt\small mshojaee@ce.sharif.edu, soleymani@sharif.edu}
- }
+ \author{AAAI-17 Submission 1456}
 
 \maketitle
 %\thispagestyle{empty}
@@ -80,14 +71,12 @@ In the test phase, unlabeled instances should be classified into seen or unseen 
  Three different clusters are shown here by circles with different colors and class signatures are mapped to center of clusters shown by stars of the same color}
  \label{fig:overview}
  \end{center}
- \vspace{-8mm}
  \end{figure}
 
 Most existing methods for zero-shot learning focus on using labeled images to learn a compatibility function indicating how similar an image is
 to each label embedding~\cite{Akata2015,emb15,sse}. Each instance will then be labeled with the category having the most compatible signature.
  On the other hand, recent advances in deep neural networks provide rich visual features with high discrimination capability~\cite{vgg}.
-We will show in Section\ref{experiments} through experiments that the space of deep visual features is a rich space
- in which instances of different categories usually form natural clusters.
+We found out through experiments that the space of deep visual features is a rich space in which instances of different categories usually form natural clusters.
 Little attention has been paid to exploiting this property of visual features in the context of zero-shot learning.
 
  %In the previous works, most concentration has been on finding embeddings for visual features and little effort has been made to exploit unsupervised information in images domain.
@@ -107,12 +96,9 @@ We also propose \textit{Independent Embedding and Clustering} (IEAC),
 a simpler method in which label assignment and class embedding in image space are not learned jointly.
 Instead, after finding the mapping using only labeled data, a clustering algorithm is used to assign labels to instances of unseen classes.
  %A semi-supervised clustering algorithm is proposed for this purpose to leverage labeled instances available for seen classes to obtain more accurate cluster assignments.
-
-In Section~\ref{experiments}, we present experimental results on four popular zero-shot classification benchmarks
+We present experimental results on four popular zero-shot classification benchmarks
  and see that the proposed method outperforms the state-of-the-art methods on these datasets.
-The rest of paper is organized as follow. In Section~\ref{related}, we briefly introduce existing methods for zero-shot learning.
-In Section~\ref{proposed}, we present our semi-supervised zero-shot learning method. In Section \ref{experiments}, we report our experiments and finally in Section~\ref{conclusion}
-we conclude.
+
 
 %___________________________________________________________________________________________________________________________________________________________
 %______________________________________Related Work_________________________________________________________
@@ -208,10 +194,10 @@ alternatively we learn just the representation of class signatures in the visual
 \section{Proposed Method} \label{proposed}
 In this section, we introduce two zero-shot learning method that use the deep visual features as the semantic space and learn
 a mapping from class signatures to this semantic space and also predict labels for instances belonging to unseen classes.
- First, we propose Independent Embedding and Clustering (IEaC), a simple and efficient semi-supervised zero-shot learning method in Section~\ref{clustering}.
+ First, we propose Independent Embedding and Clustering (IEaC), a simple and efficient semi-supervised zero-shot learning method.
 Then, we further extend our method to jointly learn the embedding of signatures and class assignments of unlabeled samples.
 We call this method Joint Embedding and Clustering (JEaC). We formulate JEaC as an optimization problem and
- introduce an iterative method to solve this it in Section~\ref{optimization}.
+ introduce an iterative method to solve this it in the next section
  We use IEaC to find a starting point for this optimization procedure (i.e., as an initial labellings for instances of unseen classes).
 \subsection{Notation}
 Let $X, \mathbf{x}$, and $x$ denote matrices, column vectors, and scalars respectively. $\norm{X}$ shows the squared Frobenius norm of a matrix and
@@ -227,11 +213,9 @@ contains labels of training data in one-hot encoding format.
 
 \subsection{Independent Embedding and Clustering} \label{clustering}
 Our first method can be roughly summarized in three steps:
-\begin{enumerate}
-  \item Using data from seen classes, we learn a linear mapping from attribute vectors to the semantic space.
-  \item We find a data clustering using our proposed semi-supervised clustering algorithm.
-  \item For instances of each cluster, we find the label whose mapped signature in the semantic visual space is the nearest one to the center of that cluster and assign that label to all of these instances.
-\end{enumerate}
+  1) Using data from seen classes, we learn a linear mapping from attribute vectors to the semantic space.
+  2) We find a data clustering using our proposed semi-supervised clustering algorithm.
+  3) For instances of each cluster, we find the label whose mapped signature in the semantic visual space is the nearest one to the center of that cluster and assign that label to all of these instances.
 We use a simple ridge regression to map class signatures to visual features. We intend to find a mapping from class signatures
  to the deep visual representation space such that each mapped (seen) class signature is close to the samples of that class in this space in average.
 The linear mapping is found using the following optimization problem:
@@ -243,7 +227,7 @@ This optimization problem is known to have the following closed form solution:
 \begin{equation} \label{eq:dic}
   D = X_s Y_s^T (Y_s Y_s^T + \gamma I)^{-1}.
 \end{equation}
-The parameter $\gamma$ is determined through cross validation as we will describe precisely in Section~\ref{experiments}.
+The parameter $\gamma$ is determined through cross validation as we will describe precisely in the Experiments
 
 Here, we intend to find labels for instances belonging to unseen classes. To this end, we want to find a clustering of instances
  in the space of deep visual features and assign a label to each cluster according to the distance between the center of that cluster
@@ -266,7 +250,7 @@ the first $n_s$ clusters be corresponding to the seen classes.
 
 Parameters $\beta$ and $k$ can be determined via the cross validation. However, in our experiments, we found out
 the model is not very sensitive to these so we fix $\beta=1$
-when data is normalized such that $\lVert x_i \rVert_1 = 1$. We set $k =  (n_s + 2n_u)$, this
+when data is normalized such that $\lVert x_i \rVert_2 = 1$. We set $k =  (n_s + 2n_u)$, this
 will allow for two clusters per class for unseen categories. This, to some extent, copes with diversity in instances of a class.
 
 
@@ -339,34 +323,6 @@ $k \in \{ 1,2, \ldots, n_s + n_u \}$\\
  \caption{Training Procedure of IEaC }
  \label{alg:leca}
 \end{algorithm}
-\textbf{Training Algorithm for IEaC: } %Linear Embedding with Cluster Assignment
-Optimization of  the objective function in Eq.~\eqref{eq:simple} is done by alternating between
-$\mathbf{\mu_i'}$s and R. $\mathbf{\mu_i'}$s are updated using:
-\begin{equation} \label{eq:updata_mu}
-  \mu_i = \frac{\sum_{n=1}^{N_s + N_u}  \mathds{1}(r_{ni}=1)\mathbf{x_n}}{\sum_{n=1}^{N_s+N_u}\mathds{1}(r_{ni}=1)},
-\end{equation}
-$R$ is updated by assigning each instance  to the cluster that minimizes the corresponding term in Eq.\eqref{eq:simple}.
-To initialize $\mathbf{\mu_i'}$s, for clusters corresponding to seen classes the centers are set as mean of instances from that class. Centers of other
-clusters are initialized using k-means++ \cite{kmeanspp} on unlabeled instances.
-The overall training algorithm IEaC is presented in algorithm \ref{alg:leca}
-
-\textbf{Training algorithm for JEaC: }
-The Eq.~\eqref{eq:main} is not convex and considering that $R$ is a partitioning of instances, the global optimization requires an
-exhaustive search over all possible labeling of test data with $n_u$ labels. Therefore, we use a simple coordinate descent
-method (like k-means). We alternate between optimizing $R$ and $D$ while fixing the other.
-Having fixed the labeling $R$, the problem becomes a simple multi-task ridge regression which has the following closed-form solution:
-\begin{equation} \label{eq:d_update}
-  D = (X_s Y_s^T + \beta X_u R S_u^T) (Y_s Y_s^T + \beta S_u R^T R S_u^T  + \gamma I)^{-1}.
-\end{equation}
-By fixing $D$, the optimal $R$ can be achieved via assigning each instance to the closest class representative:
-\begin{equation} \label{eq:r_update}
-  r_{ij} = \mathds{1}[j = \argmin_{k} \lVert X_{u(i)} - D S_{u(k)} \rVert_2 ].
-\end{equation}
-Whenever a row of $R$ contains no 1's, i.e.  an empty cluster is encountered we assign 2\% of instances randomly to that cluster.
-We continue alternating between updates of $D$ and $R$ till R remains constants, i.e., no label changes. In our experiments, this always happens
-in less that 20 iterations.
-
-To evade poor local minima, we use a good starting point that initilizing $R$ with prediction made by IEaC.
 \begin{algorithm}[t]
    \label{alg:jeac}
   {\small
@@ -385,34 +341,31 @@ To evade poor local minima, we use a good starting point that initilizing $R$ wi
  }
  \caption{Training Procedure for JEaC}
 \end{algorithm}
-%
-%
-\section{Experiments} \label{experiments}
-\begin{table*}[ht]
-\begin{minipage}{\textwidth}
-\centering
-\caption{Accuracy score (\%) of cluster assignments converted to labels
-using majority voting on ground truth labels on four zero-shot recognition benchmarks.
-Results are our method are average $\pm$ std of three runs.
-} \vspace{2mm} \label{tab:cluster}
-\begin{tabular}{|l|c|c|c|c|}
-\hline
-Clustering Method & Animals with Attributes & CUB-2011 & aPascal-aYahoo & SUN Attribute \\
-\hline
-k-means                             &  65.80                 & 35.61           & 65.37                & 17.49    \\
-\hline
-Proposed Clustering                     & \textbf{70.74$\pm$0.32}  & \textbf{42.63$\pm$0.07} & \textbf{69.93$\pm$ 3.4} & \textbf{ 45.50$\pm$1.32} \\
-\hline
-\end{tabular}
-\end{minipage}
-\end{table*}
+% \begin{table*}[ht]
+% \begin{minipage}{\textwidth}
+% \centering
+% \caption{Accuracy score (\%) of cluster assignments converted to labels
+% using majority voting on ground truth labels on four zero-shot recognition benchmarks.
+% Results for our method are in form average $\pm$ std for three runs.
+% }  \label{tab:cluster}
+% \begin{tabular}{|l|c|c|c|c|}
+% \hline
+% Clustering Method & Animals with Attributes & CUB-2011 & aPascal-aYahoo & SUN Attribute \\
+% \hline
+% k-means                             &  65.80                 & 35.61           & 65.37                & 17.49    \\
+% \hline
+% Proposed Clustering                     & \textbf{70.74$\pm$0.32}  & \textbf{42.63$\pm$0.07} & \textbf{69.93$\pm$ 3.4} & \textbf{ 45.50$\pm$1.32} \\
+% \hline
+% \end{tabular}
+% \end{minipage}
+% \end{table*}
 
 \begin{table*}[ht]
 \begin{minipage}{\textwidth}
 \centering
 \caption{Classification accuracy in \% on four public datasets: Animals with Attributes, CUB-2011, aPascal-aYahoo and SUN
 in form of average $\pm$ std.
-} \vspace{2mm} \label{tab:results}
+} \label{tab:results}
 \begin{tabular}{|l|l|c|c|c|c|}
 \hline
 Feature & Method & Animals with Attributes & CUB-2011 & aPascal-aYahoo & SUN \\
@@ -432,22 +385,54 @@ Feature & Method & Animals with Attributes & CUB-2011 & aPascal-aYahoo & SUN \\
                                             & 73.2            &  39.5           & 26.5                    &  \\
 & \cite{Akata2015}              & 61.9            &  50.1           &                         & \\
 &  \cite{sse}            &  76.33$\pm$0.53 & 30.41 $\pm$0.20 &   46.23 $\pm$ 0.53      & 82.50 $\pm$ 1.32    \\
-& \cite{agnostic}       &  80.46$\pm$0.53 & 42.11 $\pm$0.55 &   \textbf{50.35 $\pm$ 2.97}      & 83.83 $\pm$ 0.29    \\
+& \cite{agnostic}       &  80.46$\pm$0.53 & 42.11 $\pm$0.55 &   {50.35 $\pm$ 2.97}      & 83.83 $\pm$ 0.29    \\
 
 & IEaC (k-means)                             & 86.34$\pm$0.13               & 52.48$\pm$0.60              & 48.03$\pm$1.56              & 75.75$\pm$1.06 \\
 & IEaC (Proposed Clustering)                             & 86.38$\pm$0.56               & 53.10$\pm$0.43              & 48.00$\pm$0.69              & 80.66$pm$0.76 \\
-& JEaC (init D)                     & 83.03                        & 57.55                       & 42.62          & 72.50\\
-& JEaC (init R)                     & \textbf{\em 88.64$\pm$0.04}  & \textbf{\em 58.80$\pm$0.64} & 49.77$\pm$2.02 & \textbf{\em 86.16$\pm$0.57} \\
+& JEaC (init D)                     & 91.29                        & 57.55                       & 43.36          & 70.10\\
+& JEaC (init R)                     & \textbf{\em 92.98 $\pm$0.14}  & \textbf{\em 60.42$\pm$0.72} & \textbf{62.91$\pm$2.05} & \textbf{\em 85.33$\pm$0.57} \\
 \hline
 \end{tabular}
-\end{minipage}\vspace{-3mm}
+\end{minipage}
 \end{table*}
+\textbf{Training Algorithm for IEaC: } %Linear Embedding with Cluster Assignment
+Optimization of  the objective function in Eq.~\eqref{eq:simple} is done by alternating between
+$\mathbf{\mu_i'}$s and R. $\mathbf{\mu_i'}$s are updated using:
+\begin{equation} \label{eq:updata_mu}
+  \mu_i = \frac{\sum_{n=1}^{N_s + N_u}  \mathds{1}(r_{ni}=1)\mathbf{x_n}}{\sum_{n=1}^{N_s+N_u}\mathds{1}(r_{ni}=1)},
+\end{equation}
+$R$ is updated by assigning each instance  to the cluster that minimizes the corresponding term in Eq.\eqref{eq:simple}.
+To initialize $\mathbf{\mu_i'}$s, for clusters corresponding to seen classes the centers are set as mean of instances from that class. Centers of other
+clusters are initialized using k-means++ \cite{kmeanspp} on unlabeled instances.
+The overall training algorithm IEaC is presented in algorithm \ref{alg:leca}
+
+\textbf{Training algorithm for JEaC: }
+The Eq.~\eqref{eq:main} is not convex and considering that $R$ is a partitioning of instances, the global optimization requires an
+exhaustive search over all possible labeling of test data with $n_u$ labels. Therefore, we use a simple coordinate descent
+method (like k-means). We alternate between optimizing $R$ and $D$ while keeping the other one fixed.
+Having fixed the labeling $R$, the problem becomes a simple multi-task ridge regression which has the following closed-form solution:
+\begin{equation} \label{eq:d_update}
+  D = (X_s Y_s^T + \beta X_u R S_u^T) (Y_s Y_s^T + \beta S_u R^T R S_u^T  + \gamma I)^{-1}.
+\end{equation}
+By fixing $D$, the optimal $R$ can be achieved via assigning each instance to the closest class representative:
+\begin{equation} \label{eq:r_update}
+  r_{ij} = \mathds{1}[j = \argmin_{k} \lVert X_{u(i)} - D S_{u(k)} \rVert_2 ].
+\end{equation}
+Whenever a row of $R$ contains no 1's, i.e.  an empty cluster is encountered we assign 2\% of instances randomly to that cluster.
+We continue alternating between updates of $D$ and $R$ till R remains constants, i.e., no label changes. In our experiments, this always happens
+in less that 20 iterations.
+To evade poor local minima, we use a good starting point that initializing $R$ with prediction made by IEaC.
+
+%
+%
+\section{Experiments} \label{experiments}
+
 In this section, we conduct experiments on the popular benchmarks to obtain results of the proposed method on these benchmarks and compare them
  with those of the other methods.
 
 \textbf{Datasets.}
 We evaluate our proposed methods on four popular public benchmarks for zero-shot classification.
-(1) Animal with Attributes (AwA) \cite{lampert09}. There are images of 50 mammal species in this data set
+(1) Animal with Attributes (AwA) \cite{lampert09}. There are images of 50 mammal species in this dataset
 Each class is described by a single $85-$dimensional attribute vector. We use the continuous attributes rather than
 the binary version as it has proved to be more discriminative in previous works like \cite{Akata2015}. The train/test split provided by the dataset is used accordingly.
 (2) aPascal/aYahoo \cite{farhadi09}. The 20 categories from Pascal VOC 2008 \cite{pascal} are considered as seen classes and
@@ -467,49 +452,49 @@ pre-trained on image-net, provided publicly by \cite{sse}.
 %We also report results using 2) $1024-$dimentional features from GoogleLeNet \cite{googlenet} provided publicly by \cite{Akata2015}.
 \begin{figure*}[t]
   \centering
-  \begin{subfigure}[b]{0.27\linewidth}
-    \includegraphics[width=\linewidth]{figure_1}
+  \begin{subfigure}[b]{0.25\linewidth}
+    \includegraphics[width=\linewidth]{none}
     \caption{}
     \label{fig:null}
   \end{subfigure}
 %
-  \begin{subfigure}[b]{0.27\linewidth}
-    \includegraphics[width=\linewidth]{figure_1_true}
+  \begin{subfigure}[b]{0.25\linewidth}
+    \includegraphics[width=\linewidth]{truth}
     \caption{}
 % \caption{Points colored according to their ground truth labels}
     \label{fig:truth}
   \end{subfigure}
 %
-  \begin{subfigure}[b]{0.27\linewidth}
-    \includegraphics[width=\linewidth]{figure_2}
+  \begin{subfigure}[b]{0.25\linewidth}
+    \includegraphics[width=\linewidth]{knn}
     % \caption{Signatures mapped to image spacing using Eq. \eqref{eq:dic} and denoted by stars. Then classification done using nearest neighbor}
     \caption{}
 \label{fig:knn}
   \end{subfigure}
 %
-  \begin{subfigure}[b]{0.27\linewidth}
-    \includegraphics[width=\linewidth]{figure_3_kmeans}
+  \begin{subfigure}[b]{0.25\linewidth}
+    \includegraphics[width=\linewidth]{kmeans}
     % \caption{Stars as previous. Classification done by our compatibility function on cluster assignments from k-means}
     \caption{}
 \label{fig:kmeans}
   \end{subfigure}
 %
-  \begin{subfigure}[b]{0.27\linewidth}
-    \includegraphics[width=\linewidth]{figure_3}
+  \begin{subfigure}[b]{0.25\linewidth}
+    \includegraphics[width=\linewidth]{own_cluster}
     \caption{}
     \label{fig:clustering}
 % \caption{Stars as previous. Classification by our compatibility function using our supervised clustering}
   \end{subfigure}
 %
-  \begin{subfigure}[b]{0.27\linewidth}
+  \begin{subfigure}[b]{0.25\linewidth}
     \label{fig:joint}
-    \includegraphics[width=\linewidth]{figure_4}
+    \includegraphics[width=\linewidth]{jeac}
     \caption{}
 % \caption{Class signatures mapped to image space (stars) and cluster assignment by JEaC}
   \end{subfigure}
-  \caption{t-SNE embedding of five classes from AwA, three seen: antelope (magenta), grizzly bear (yellow), killer whale (cyan) and two
+  \caption{t-SNE embedding of four classes from AwA, three seen: antelope (cyan), grizzly bear (yellow) and two
   unseen: chimpanzee (blue), giant panda (green). Images shown by plus signs and embedding of class signatures in images space by stars.
-  in figures b-f black points denote assignment to a class other five classes shown here.
+  in figures b-f red points denote assignment to a class other the four classes shown here.
   \textbf{b)} Points colored according to their ground truth labels
   \textbf{c)} Signatures mapped to image spacing using Eq. \eqref{eq:dic}. Then classification done using nearest neighbor
   \textbf{d)} Classification done by our compatibility function on cluster assignments from k-means
@@ -519,45 +504,46 @@ pre-trained on image-net, provided publicly by \cite{sse}.
   \label{fig:tsne}
 \end{figure*}
 
-\textbf{Testing Cluster Assumption:}
-First, to give evidence for our key assumption of our method that instances from each class usually form a cluster in visual feature domains
-and to demonstrate effectiveness of our proposed clustering algorithm we design an
-experiment in which instances from unseen categories are clustered using our proposed clustering algorithm and also the k-means algorithm. Then,
-each cluster is assigned with a class label based on majority voting on ground truth labels. The number of clusters
- is set to the number of classes as a natural choice.
- \footnote{However we found out through experiment that increasing the number of clusters improves the accuracy.}
-For the k-means algorithm, we use the implementation available in Scikit-learn library \cite{scikit-learn} and run it with 20 different initializations
-and report results of that one with the best score.
-Accuracy of this labeling scheme that is based on clustering is reported in Table~\ref{tab:cluster}.
-These results shows the effectiveness of our proposed clustering method and that the cluster structure assumption in the visual semantic space is usually right.
+% \textbf{Testing Cluster Assumption:}
+% First, to give evidence for our key assumption of our method that instances from each class usually form a cluster in visual feature domains
+% and to demonstrate effectiveness of our proposed clustering algorithm we design an
+% experiment in which instances from unseen categories are clustered using our proposed clustering algorithm and also the k-means algorithm. Then,
+% each cluster is assigned with a class label based on majority voting on ground truth labels. The number of clusters
+%  is set to the number of classes as a natural choice.
+%  \footnote{However we found out through experiment that increasing the number of clusters improves the accuracy.}
+% For the k-means algorithm, we use the implementation available in Scikit-learn library \cite{scikit-learn} and run it with 20 different initializations
+% and report results of that one with the best score.
+% Accuracy of this labeling scheme that is based on clustering is reported in Table~\ref{tab:cluster}.
+% These results shows the effectiveness of our proposed clustering method and that the cluster structure assumption in the visual semantic space is usually right.
 
 \textbf{Cross Validation:}
-To adjust parameters $\gamma$ and $\beta$ in Eq.~\ref{eq:d_update} and parameter $\gamma$ in Eq. \ref{eq:dic}, we split training data into train and validation sets.
-We choose a number of categories randomly from training data as validation categories. For each data set, the size of the
-validation set has the same ratio to the train set as the size of the test categories to the total of the train and the validation one.
-In our experiments, we used $10-$fold cross validation, i.e., average results from ten different validation splits are used to decide on
+To adjust parameters $\gamma$ and $\beta$ in Eq.~\eqref{eq:d_update} and parameter $\gamma$ in Eq. \eqref{eq:dic}, we split training data into train and validation sets.
+We choose a number of categories randomly from training data as validation categories. For each dataset, the size of the
+validation set has the same ratio to the train set as the size of the test categories to the total of the train and validation.
+In our experiments, we used $10-$fold cross validation, i.e. average results from ten different validation splits are used to decide on
 optimal parameters.
 Once optimal $\gamma$ and $\beta$ are determined through the grid search by testing on validation set, the model
 is then trained on all seen categories.
 
 We summarize our experimental results in Table~\ref{tab:results}.
-\textit{IEaC (Proposed Clustering)} corresponds to the method presented in Section~\ref{clustering}.
-\textit{IEaC ( K-means)} is another version of our simple  method in which our semi-supervised clustering is substituted by k-means clustering.
+% \textit{IEaC (Proposed Clustering)} corresponds to IEaC and the poroposed semi-supervised clustering algorithm
+\textit{IEaC ( K-means)} is another version of IEaC in which our semi-supervised clustering is substituted by k-means clustering.
 \textit{JEaC(init D)} and \textit{JEaC(init R)} correspond to optimizing Eq.~\eqref{eq:main}
 with respectively initializing $D$ using Eq.~\eqref{eq:dic} and initializing $R$ by IEaC.
 For our methods, average and standard deviation of different runs are reported. As it can be seen, the initialization done
 by IEaC has critical effect on the performance. This can be justified by noting the information from structure of
 unlabeled data is leveraged when initializing $R$ while such information is absent in initializing $D$.
+%
+For other methods, we use the results reported in their original publication.
+Note that there may be some differences in experimental settings between some of other methods and ours.
+ We did not re-implement any of the other methods and if the original paper does not report results on a dataset we leave the corresponding cell as blank.
+Our method performs substantially better on all four benchmarks.
 
- For other methods, we use the results reported in their original publication. Note that some experimental settings of these works may differ from those of ours. We did not re-implement any of the other methods and if the original paper does not report results on a data set we leave the corresponding cell as blank.
-Our method performs the best on three out of the four datasets (outperforms the others on all except to the aPascal-aYahoo dataset). This can be explained by the nature of the dataset in which class signatures obtained by averaging instance attributes are very similar. We suppose trying to learn
-more discriminative signatures from data can potentially improve the result. We investigate this in our future work.
-
-The effectiveness of different components of our methods in further illustrated in Figure~\ref{fig:tsne}. As it can be seen in
-Figure~\ref{fig:knn} merely using mapping from Eq. \eqref{eq:dic} results in poor signature embeddings where domain shift problem is
+The effectiveness of different components of our methods is further illustrated in Figure~\ref{fig:tsne}. As it can be seen in
+Figure~\ref{fig:knn} merely using mapping from Eq. \eqref{eq:dic} results in poor signature embeddings and domain shift problem is
 visible. However using the compatibility function based on cluster assignments, although the there is no change in mappings,
-label assignments are improved, our clustering  (Figure~\ref{fig:clustering} ) performing  better than k-means (Figure~\ref{fig:kmeans}). Finally using
-mapping from JEaC, the domain shift problem is substantially alleviated and far better signature embeddings are achieved.
+label assignments are improved, our clustering  (Figure~\ref{fig:clustering}) performing  better than k-means (Figure~\ref{fig:kmeans}). Finally using
+mapping from JEaC, the domain shift problem is substantially alleviated and better signature embeddings are achieved.
 %
 %
 %

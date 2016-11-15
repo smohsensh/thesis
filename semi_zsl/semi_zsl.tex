@@ -58,25 +58,26 @@ The effectiveness of the proposed method is demonstrated through extensive exper
 
 \section{Introduction}
 Zero-shot learning \cite{bengio08,hinton09,lampert09,farhadi09} is an extension to the conventional supervised learning scenario
-that alleviates the assumption of having ample labeled instances for all categories. It addresses the
-recognition problem when no labeled instance is available for some classes.
-Instead, some sort of description that is called \textit{class signature} is available for all categories.
+that releases the assumption of having ample labeled instances for all categories. It addresses the
+recognition problem in which no labeled instance is available for some classes but
+some sort of description that is called \textit{class signature} is available for all categories.
 Example of class signatures include human-annotated discriminative attributes or textual description of the categories.
 The problem addressed by zero-shot learning rises naturally in practice wherever it is not feasible to acquire abundant labeled instances for
- all the categories (e.g., fine-grained classification problems).
-To describe the task more precisely, in the training phase, labeled instances for some categories which are called seen classes are provided
+ all categories (e.g., fine-grained classification problems).
+To describe the task more precisely, in the training phase, labeled instances for some categories called seen classes are provided
 while for other categories, called unseen ones, there is no labeled instance available.
 In the test phase, unlabeled instances should be classified into seen or unseen categories.
  In this work, we focus on the most popular version of zero-shot recognition in which test instances belong only to unseen categories.
  %In this setting, zero-shot learning mitigates the problem of acquiring labeled instances, which can be hard for a novel, rare or fine-grained categories.
- \begin{figure}[!t]
+ \begin{figure*}[t]
  \begin{center}
- \includegraphics[width=0.98\columnwidth]{overview.pdf}
- \caption{In our model, we map class signatures close to all instances of the class for seen classes and close to instances in a cluster for unseen ones.
-Here, clusters are shown by ellipses and class signatures mapped to the center of these clusters are depicted by stars.}
+ \includegraphics[width=2\columnwidth]{FigOverview.pdf}%{overview.pdf}
+ %\caption{In our model, we map class signatures close to all instances of the class for seen classes and close to instances in a cluster for unseen ones.
+%Here, clusters are shown by ellipses and class signatures mapped to the center of these clusters are depicted by stars.}
+\caption{The proposed method maps attribute vectors of classes to the space of deep visual features such that the mapped attribute vectors are good representatives for the samples of the corresponding classes. The mapped attributes are depicted by stars.}
  \label{fig:overview}
  \end{center}
- \end{figure}
+ \end{figure*}
 Most existing methods for zero-shot learning focus on using labeled instances (i.e. images) to learn a compatibility function indicating how similar an instance is
 to each label embedding obtained from class signatures~\cite{Akata2015,emb15,sse}. Each instance will then be labeled with the category having the most compatible signature.
  On the other hand, recent advances in deep neural networks provide rich visual features with high discrimination capability~\cite{vgg}.
@@ -86,7 +87,7 @@ Nonetheless, little attention has been paid to exploiting this property of deep 
  %In the previous works, most concentration has been on finding embeddings for visual features and little effort has been made to exploit unsupervised information in images domain.
 
 In this paper, we propose a semi-supervised zero-shot
-learning method called Joint Embedding and Clustering (JEaC) that uses both labeled instances of seen
+learning method called \textit{Joint Embedding and Clustering} (JEaC) that uses both labeled instances of seen
 classes and unlabeled instances of unseen classes to find a
 more proper representation of class signatures in the space of deep visual features. In this method, a linear transformation
 is learned to map the class signatures to the space of
@@ -215,10 +216,10 @@ Suppose there are $n_s$ seen categories and $n_u$ unseen categories. For each ca
 auxiliary information $a_y \in \mathbb{R}^r$ is available. We assume that labels $\{1, \ldots, n_s \}$ correspond to seen categories.
 
 Let $X_s \in \mathbb{R}^{d \times N_s}$ and $X_u \in \mathbb{R}^{d \times N_u}$
-denote matrices whose columns are seen and unseen images respectively where $d$ is the dimension of image features.
+denote matrices whose columns are seen and unseen images respectively where $d$ is the dimension of image features and $N_s$ (or $N_u$) shows the whole number of the images in the seen (or unseen) classes.
 $S_s = [a_1, \ldots, a_{n_s}]$ presents the matrix of signatures for seen classes and $S_u$ is defined similarly for unseen classes.
 $Z_s = [ \mathbf{z}_1, \ldots, \mathbf{z}_{N_s} ]$
-contains labels of training data in one-hot encoding format.
+contains labels of training data in the one-hot encoding format. $\mathbf{r}_n$ also denotes the label assigned to the $n$-th instance by our algorithm in the one-hot coding format.
 
 \subsection{Independent Embedding and Clustering} \label{clustering}
 Our first method can be roughly summarized in three steps:
@@ -233,12 +234,12 @@ We use a simple ridge regression to map class signatures to deep visual features
  We intend to a mapping such that each mapped (seen) class signature is close to the samples of that class in this space in average.
 The linear mapping is found using the following optimization problem:
 \begin{equation} \label{eq:mapping}
-  D = \argmin_D \norm{X_s - D Y_s} + \gamma \norm{D},
+  W^* = \argmin_W \norm{X_s - W Y_s} + \gamma \norm{W},
 \end{equation}
 where columns of $ Y_s \in \mathbb{R}^{r \times n_s} $ are the class signatures of the samples lied in the columns of $X_s$ (i.e. $Y_s=S_sL$ where columns of $L$ contain the one-of-$n_s$ encoding of the labels for instances of seen classes).
 This optimization problem is known to have the following closed form solution:
 \begin{equation} \label{eq:dic}
-  D = X_s Y_s^T (Y_s Y_s^T + \gamma I)^{-1}.
+  W = X_s Y_s^T (Y_s Y_s^T + \gamma I)^{-1}.
 \end{equation}
 The parameter $\gamma$ is determined through cross validation as we will describe in the Experiments section.
 
@@ -248,8 +249,8 @@ Here, we intend to find labels for the instances belonging to unseen classes. To
 The label whose mapped signature is the closest one to the cluster center is selected to be assigned to all instances in the cluster.
 More precisely, let $\boldsymbol{\mu}_k$ be the center of the $k$-th cluster and $c(\mathbf{x}_n)$ denote the cluster number to which $\mathbf{x}_n$ is assigned.
 The label assigned to $\mathbf{x}_n$ in our method would be:
-\begin{equation}
-  \argmin_{i=n_s + 1,\ldots, n_u + n_s} \normtwo{ D(Y_s)_{(i)} - \boldsymbol{\mu}_{c(\mathbf{x}_n)} }.
+\begin{equation} \label{eq:label_assign}
+  \argmin_{i=n_s + 1,\ldots, n_u + n_s} \normtwo{ W(Y_s)_{(i)} - \boldsymbol{\mu}_{c(\mathbf{x}_n)} }.
 \end{equation}
 
 To find a better clustering of instances belonging to unseen classes,
@@ -271,21 +272,21 @@ The objective function is similar to that of the k-means clustering algorithm bu
 the first $n_s$ clusters be corresponding to the seen classes.
 %This is intuitively plausible, on one hand all data is being used in the clustering and on the other ????????
 
-Parameters $\beta$ and $k$ can be determined via the cross validation. However, in our experiments, we found out
+Parameters $\beta$ and $k$ can be determined via cross validation. However, in our experiments, we found out
 the model is not very sensitive to them so we fix $\beta=1$
-when data are normalized. Moreover, we set $k =  (n_s + 2n_u)$ which
-can allow more than one cluster per class for unseen categories. This, to some extent, copes with diversity of instances in a class.
+when data have been normalized. \textcolor{red}{ Moreover, we set $k =  (n_s + 2n_u)$ which
+can allow more than one cluster per class for unseen categories. This, to some extent, copes with diversity of instances in a class.}
 
-To solve the optimization problem in Eq.~\ref{eq:simple}, we use an iterative procedure (similar to k-meams) shown in Algorithm~\ref{alg:leca}. In each iteration, $\mathbf{\mu}_i$s are updated as:
+To solve the optimization problem in Eq.~\ref{eq:simple}, we use an iterative procedure (similar to k-meams) shown in Algorithm~\ref{alg:ieac}. In each iteration, $\mathbf{\mu}_i$s are updated as:
 \begin{equation} \label{eq:updata_mu}
   \mu_i = \frac{\sum_{n=1}^{N_s + N_u}  \mathds{1}(r_{ni}=1)\mathbf{x}_n}{\sum_{n=1}^{N_s+N_u}\mathds{1}(r_{ni}=1)},
 \end{equation}
 and instances of unseen classes are assigned to the nearest cluster to them.
 
-To initialize $\boldsymbol{\mu}_i$s, for clusters corresponding to seen classes the centers are set as the mean of instances of that class. Centers of other
+To initialize $\boldsymbol{\mu}_i$'s, for clusters corresponding to seen classes the centers are set as the mean of instances of those classes. Centers of other
 clusters are initialized using k-means++ \cite{kmeanspp} on unlabeled instances.
 
-% Finally, to assign labels to test instances, we use the mapping $D$ from Eq.\eqref{eq:dic} to
+% Finally, to assign labels to test instances, we use the mapping $W$ from Eq.\eqref{eq:dic} to
 % map class signatures to visual features, creating a set of \textit{class representatives}
 %  in the visual feature space. We then assign to all instances of a cluster the class label whose representative is
 %   the nearest to the center of that cluster.
@@ -302,13 +303,13 @@ A key distinction between the clustering-based method presented here and other e
 according to the similarity of the cluster center to which this instance is assigned and the mapped signature of that label.
 Therefore, by considering the distribution of data samples (via clustering)
 in designing the compatibility function, we can reach a more reliable measure.
-This compatibility function can be plugged in every other method in this way that after final predictions are made by the method,
-a clustering algorithm is ran on data and then we assign an identical label to all cluster
-members by majority voting on those predictions.
+% This compatibility function can be plugged in every other method in this way that after final predictions are made by the method,
+% a clustering algorithm is ran on data and then we assign an identical label to all cluster
+% members by majority voting on those predictions.
  % We found through experiment that this extra step will improve performance of many existing methods.
 
 Although the above method outperforms the state-of-the-art methods on most zero-shot recognition benchmarks, it uses only instances of the seen classes to find the linear transformation from class signatures to the visual feature space and thus the proposed method may suffer from the domain shift problem introduced in \cite{eccv14}.
-To overcome the domain shift problem more substantially, in the next subsection, we propose an optimization problem for finding the linear transform from class signatures to the visual feature space that uses instances of both seen and unseen classes.
+To overcome the domain shift problem more substantially, in the next subsection, we propose an optimization problem for finding the linear transformation from class signatures to the visual feature space that uses instances of both seen and unseen classes.
 
 \subsection{Joint Embedding and Clustering}
 \label{joint}
@@ -322,17 +323,17 @@ such that the mapped signatures are good representatives of the assigned instanc
 
 The objective function of JEaC is formulated as follows:
  \begin{align} \label{eq:main}
-   \minimize_{R,D} \norm{X_s - D Y_s}  &+ \lambda \norm{X_u - D S_u R^T } + \gamma \norm{D} \\
+   \minimize_{R,W} \norm{X_s - W Y_s}  &+ \lambda \norm{X_u - W S_u R^T } + \gamma \norm{W}, \\
    \text{s. t.} \quad & R \in \{0,1\}^{N_u \times n_u}. \nonumber
  \end{align}
-The first term in the above optimization problem is identical to Eq.\eqref{eq:mapping} and the second one incorporates unlabeled data for learning the mapping $D$. Therefore, we seek class assignments for instances of unseen classes such that a linear transformation on class signatures providing good representatives for both the seen and unseen classes can be learnt. By enforcing
- the signatures to be mapped close to test instances, the second term helps us to confront the domain shift problem.
+where $R$ shows the cluster assignment of unlabeled instances in one-hot encoding format. The first term in the above optimization problem is identical to Eq.\eqref{eq:mapping} and the second one incorporates unlabeled data for learning the mapping $W$. Therefore, we seek class assignments for instances of unseen classes and simultaneously learn a mapping on the class signatures such that the mapped signatures provide good representatives for instances of both the seen and unseen classes. By enforcing
+ the signatures of unseen classes to be mapped close to a set of test instances, the second term helps us to confront the domain shift problem.
 More precisely, in the above problem, for the seen classes, the sum of the squared distances of instances from the
  mapped signature of the corresponding class is minimized. For instances of unseen classes,
  the mapping and class assignment are jointly learned to minimize such term (i.e. sum of their squared distances from representation of the class they are assigned to).
   The second term in Eq.~\ref{eq:main} can be essentially considered as a clustering objective with two
   additional advantages. First, the number of clusters is no longer a parameter and is determined by the number of unseen classes.
-   Second, the cluster centers are set to be the mapped signatures of the test classes.
+   Second, the cluster centers are set to be the mapped signatures of the test classes and thus we can learn mapping $W$ and class assignments $R$ jointly.
 
 \subsubsection{Optimization} \label{optimization}
 
@@ -351,16 +352,16 @@ More precisely, in the above problem, for the seen classes, the sum of the squar
     $c_n \leftarrow  {\argmin_i \lVert x_n - \mu_i \rVert_2}, \quad  n \in \{ 1,2, \ldots, N_s + N_u \}$\;
     $\boldsymbol{\mu}_k \leftarrow \frac{\sum_{n} \mathbf{x_n} \mathds{1}(c_n = k)} {\sum_n (\mathds{1}(c_n = k)}, \quad  k \in   \{n_s+1,2, \ldots, n_s + n_u \}$ \;
      }
- $  D \leftarrow X_s Y_s^T (Y_s Y_s^T + \gamma I)^{-1}$\;
+ $  W \leftarrow X_s Y_s^T (Y_s Y_s^T + \gamma I)^{-1}$\;
  // array $l$ maps cluster numbers to labels
- $l[k] \leftarrow \argmin_j \lVert \boldsymbol{\mu_k} - (DS_u)_{(j)} \rVert_2$\;
+ $l[k] \leftarrow \argmin_j \lVert \boldsymbol{\mu_k} - (WS_u)_{(j)} \rVert_2$\;
   $\mathbf{(Z_u)_{(n)}} \leftarrow \mathbf{1}_{l[c_n]}$\;
  }
  \caption{Training Procedure of IEaC }
- \label{alg:leca}
+ \label{alg:ieac}
 \end{algorithm}
+
 \begin{algorithm}[t]
-   \label{alg:jeac}
   {\small
   \SetKwData{Left}{left}\SetKwData{This}{this}\SetKwData{Up}{up}
 \SetKwFunction{Union}{Union}\SetKwFunction{FindCompress}{FindCompress}
@@ -368,33 +369,30 @@ More precisely, in the above problem, for the seen classes, the sum of the squar
   \Input{ $X_s, Y_s, Z_s, X_u, S_u$}
   \Output{$Z_u$ (label predictions for $X_u$)}
   \BlankLine
-  Initialize $R$ by output of Algorithm \ref{alg:leca} \;
+  Initialize $R$ by output of Algorithm \ref{alg:ieac} \;
  \Repeat{no element of $R$ changes}{
-    update $D$ by Eq. \eqref{eq:d_update} \;
+    update $W$ by Eq. \eqref{eq:d_update} \;
     updata $R$ by Eq. \eqref{eq:r_update} \;
  }
   output $Z_u \leftarrow R$
  }
  \caption{Training Procedure for JEaC}
+ \label{alg:jeac}
 \end{algorithm}
-% \begin{table*}[ht]
-% \begin{minipage}{\textwidth}
-% \centering
-% \caption{Accuracy score (\%) of cluster assignments converted to labels
-% using majority voting on ground truth labels on four zero-shot recognition benchmarks.
-% Results for our method are in form average $\pm$ std for three runs.
-% }  \label{tab:cluster}
-% \begin{tabular}{|l|c|c|c|c|}
-% \hline
-% Clustering Method & Animals with Attributes & CUB-2011 & aPascal-aYahoo & SUN Attribute \\
-% \hline
-% k-means                             &  65.80                 & 35.61           & 65.37                & 17.49    \\
-% \hline
-% Proposed Clustering                     & \textbf{70.74$\pm$0.32}  & \textbf{42.63$\pm$0.07} & \textbf{69.93$\pm$ 3.4} & \textbf{ 45.50$\pm$1.32} \\
-% \hline
-% \end{tabular}
-% \end{minipage}
-% \end{table*}
+\begin{table*}[ht]
+\centering
+\caption{Adjusted Rand Index for  a simple k-means clustering on test instances from four benchmark datsets.
+}  \label{tab:cluster}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+Clustering Method & Animals with Attributes & CUB-2011 & aPascal-aYahoo & SUN Attribute \\
+\hline
+k-means                             &  76.99                 & 38.59           & 77.85                & 55.49    \\
+\hline
+Proposed Clustering                     & \textbf{70.74$\pm$0.32}  & \textbf{42.63$\pm$0.07} & \textbf{69.93$\pm$ 3.4} & \textbf{ 45.50$\pm$1.32} \\
+\hline
+\end{tabular}
+\end{table*}
 
 \begin{table*}[ht]
 \begin{minipage}{\textwidth}
@@ -425,9 +423,8 @@ Feature & Method & Animals with Attributes & CUB-2011 & aPascal-aYahoo & SUN \\
 
 & IEaC (k-means)                             & 86.34$\pm$0.13               & 52.48$\pm$0.60              & 48.03$\pm$1.56              & 75.75$\pm$1.06 \\
 & IEaC (Proposed Clustering)                             & 90.52$\pm$0.74               & 53.10$\pm$0.43              & 48.00$\pm$0.69              & 80.66$\pm$0.76 \\
-& JEaC (init D)                     & 91.29                        & 57.55                       & 43.36          & 70.10\\
-& JEaC (init R)                     & \textbf{\em 92.98 $\pm$0.14}  & \textbf{\em 60.42$\pm$0.72} & \textbf{62.91$\pm$2.05} & \textbf{\em 85.33$\pm$0.57} \\
-
+& JEaC (init W)                     & 91.29                        & 57.55                       & 43.36          & 70.10\\
+& JEaC (init R)                       & \textbf{\em 92.98 $\pm$0.14}  & \textbf{\em 60.42$\pm$0.72} & \textbf{53.20$\pm$3.12} & \textbf{\em 85.33$\pm$0.57} \\
 \hline
 \end{tabular}
 \end{minipage}
@@ -435,24 +432,24 @@ Feature & Method & Animals with Attributes & CUB-2011 & aPascal-aYahoo & SUN \\
 
 The optimization problem in Eq.~\eqref{eq:main} is not convex and considering that $R$ is a partitioning of instances, the global optimization requires an
 exhaustive search over all possible labeling of test data with $n_u$ labels. Therefore, we use a simple coordinate descent
-method (like k-means). We alternate between optimizing $R$ and $D$ while keeping the other one fixed.
+method (like k-means). We alternate between optimizing $R$ and $W$ while keeping the other one fixed.
 Having fixed the labeling $R$, the problem becomes a simple multi-task ridge regression which has the following closed-form solution:
 \begin{equation} \label{eq:d_update}
-  D = (X_s Y_s^T + \lambda X_u R S_u^T) (Y_s Y_s^T + \lambda S_u R^T R S_u^T  + \gamma I)^{-1}.
+  W = (X_s Y_s^T + \lambda X_u R S_u^T) (Y_s Y_s^T + \lambda S_u R^T R S_u^T  + \gamma I)^{-1}.
 \end{equation}
-By fixing $D$, the optimal $R$ can be achieved via assigning each instance to the closest class representative:
+By fixing $W$, the optimal $R$ can be achieved via assigning each instance to the closest class representative:
 \begin{equation} \label{eq:r_update}
-  r_{ij} = \mathds{1}[j = \argmin_{k} \lVert X_{u(i)} - D S_{u(k)} \rVert_2 ].
+  r_{ij} = \mathds{1}[j = \argmin_{k} \lVert X_{u(i)} - W S_{u(k)} \rVert_2 ].
 \end{equation}
 Whenever a row of $R$ contains no ones, i.e. an empty cluster appears, a percentage of instances are randomly assigned to that cluster.
-We continue alternating between updates of $D$ and $R$ till $R$ remains constant, i.e. no label changes.
+We continue alternating between updates of $W$ and $R$ till $R$ remains constant, i.e. no label changes.
 To evade poor local minima, we use a good starting point that initializes $R$ with cluster assignments found by IEaC.
 %
 %
 \section{Experiments} \label{experiments}
 In this section, we conduct experiments on the popular benchmarks to obtain results of the proposed method on these benchmarks and compare them
  with those of the other recent methods.
-
+\subsection{Setup} \label{setup}
 \textbf{Datasets.}
 We evaluate our methods on four popular public benchmarks for zero-shot classification.
 (1) Animal with Attributes (AwA) \cite{lampert09}: There are images of 50 mammal species in this dataset.
@@ -468,6 +465,7 @@ as in \cite{jayaraman14} where 10 classes have been considered as unseen.
 birds where each image has been annotated with 312 binary attributes. Again, we average over instances to get continuous class signatures.
 The same train/test split as in \cite{akata13} (and many other following works) is used to make comparison possible.
 
+\textbf{Visual features.}
 As our method relies on meaningful structure in visual features domain, we use features from a deep CNN known to be
  more discriminative than \textit{shallow} features like SIFT or HOG. We report results using
   $4096-$dimensional features from the first fully connected layer of 19 layer VGG network \cite{vgg}
@@ -541,7 +539,7 @@ pre-trained on image-net, provided publicly by \cite{sse}.
 % Accuracy of this labeling scheme that is based on clustering is reported in Table~\ref{tab:cluster}.
 % These results shows the effectiveness of our proposed clustering method and that the cluster structure assumption in the visual semantic space is usually right.
 
-\textbf{Cross Validation:}
+\textbf{Cross Validation.}
 To adjust parameters $\gamma$ and $\beta$ in Eq.~\eqref{eq:d_update} and parameter $\gamma$ in Eq. \eqref{eq:dic},
  training data are partitioned into train and validation sets.
 We choose a number of categories randomly from training data as validation categories. For each dataset, the ratio of the categories in the
@@ -551,30 +549,99 @@ optimal parameters.
 Once optimal values for parameters are determined through the grid search by testing on validation set, the model
 is then trained on all seen categories.
 
-\textbf{Results:}
-The proposed methods are compared with the most recent methods for zero-shot recognition shown in Table~\ref{tab:results}.
-Among these methods, \cite{semi15,li15max} are semi-supervised zero-shot learning methods.
-We summarize experimental results in Table~\ref{tab:results}.
-% \textit{IEaC (Proposed Clustering)} corresponds to IEaC and the poroposed semi-supervised clustering algorithm
-For other methods, we use the results reported in their original publication.
+\subsection{Experimental Results}\label{results}
+\textbf{Clustering experiment.}
+First,  to  give  evidence  for  the  key  assumption  of  our method that samples of each class usually form
+ a cluster in the space of deep visual features, we conduct an experiment in which samples of unseen categories
+  (in the space of deep visual features) are clustered using a simple kmeans algorithm.
+The number of clusters in this experiment is set to the number of unseen classes.
+The kmeans implementation available in Scikit-learn library \cite{scikit-learn}
+is used and the algorithm is run with 20 different initializations and the best score according
+to the cost function of kmeans is selected. To evaluate clustering results,
+the adjusted Rand Index is used and the obtained results are reported in Table \ref{tab:cluster}.
+These results show that the cluster structure assumption in the deep visual space is valid to some extent and
+thus we can use this assumption for the unsupervised task of labeling samples of unseen classes.
+
+
+\textbf{Compared methods}
+The proposed methods are compared with the most recent methods of zero-shot recognition shown in Table~\ref{tab:results}.
+Among these methods, \cite{semi15,li15max} are semi-supervised zero-shot learning methods that use unlabeled samples of unseen classes during the training.
+For other methods, we use the results reported in their original papers.
 %Note that there may be some differences in experimental settings between some of other methods and ours.
 Since we did not re-implement any of the other methods, if the original paper does not report results on a dataset we leave the corresponding cell as blank.
 
-In Table~\ref{tab:results}, \textit{IEaC (K-means)} shows another version of IEaC in which our semi-supervised clustering is substituted by the simple k-means clustering.
- \textit{JEaC(init D)} and \textit{JEaC(init R)} correspond to optimizing Eq.~\eqref{eq:main}
-with respectively initializing $D$ using Eq.~\eqref{eq:dic} and initializing $R$ by IEaC.
-For our methods, the average and the standard deviation of different runs are reported. As it can be seen, the initialization of $R$ done
-by IEaC has a critical role on the performance. This can be justified by noting that the information about the distribution of
-unlabeled data is leveraged when initializing $R$ (by the cluster assignment $R$ found in our IEaC method)
- while such information is absent in initializing $D$ as in Eq.~\ref{eq:dic}.
+In Table~\ref{tab:results}, \textit{IEaC (K-means)} and \textit{IEaC (Proposed Clustering)} are the two versions of the IEaC method proposed
+ in Section \ref{clustering}.
+  In fact, \textit{IEaC (K-means)} uses the simple k-means clustering on samples
+   of unseen classes and then utilizes Eq.~\ref{eq:label_assign} to assign labels to the clustered samples.
+  However, \textit{IEaC (Proposed Clustering)} that has been shown in Algorithm~\ref{alg:ieac} performs
+   the proposed semi-supervised clustering instead of the simple kmeans clustering. For our JEaC method,
+ we introduced an iterative procedure in Section \ref{optimization} that starts by initializing $R$.
+  Nonetheless, we can start by initializing either $W$ or $R$.
+   \textit{JEaC(init W)} corresponds to initializing $W$ using Eq.~\eqref{eq:dic}
+   and \textit{JEaC(init R)} denotes JEaC that initializes $R$ by the output of IEaC.
 %
-According to the results in Table~\ref{tab:results}, our JEaC (init R) method performs substantially better on all four benchmarks. Although our IEaC method performs better than the existing zero-shot learning methods, our JEaC (init R) method outperforms IEaC too.
+%    Moreover, if instance-level attribute vectors are available, true  attribute vector corresponding
+%  to each labeled image can be used to construct $Y_s$ in \ref{eq:main} instead of the averaged class signature.
+% \textit{JEaC(instance-attribute)} shows
+%   results for such usage of attribute wectors in JEaC for three datasets that provide instance-level attribute vectors.
+
+\textbf{Results.}
+Results of the compared methods have been summarized in Table~\ref{tab:results}.
+For our methods, the average and the standard deviation of different runs have been reported in Table~\ref{tab:results}. As it can be seen, the initialization of $R$ done by IEaC has an important role on the performance of JEaC. This can be justified by noting that the information about the distribution of
+unlabeled data is leveraged when initializing $R$ (by the cluster assignment $R$ found in our IEaC method)
+ while such information is absent in initializing $W$ as in Eq.~\ref{eq:dic}.
+According to the results in Table~\ref{tab:results}, our JEaC (init R) method outperforms the other methods on all the four benchmarks. Although our IEaC method performs generally better than the existing zero-shot learning methods, our JEaC (init R) method outperforms IEaC too.
 
 The effectiveness of different components of our methods is further illustrated in Figure~\ref{fig:tsne}. As it can be seen in
-Figure~\ref{fig:knn} merely using mapping from Eq.~\eqref{eq:dic} results in poor signature embeddings and domain shift problem is
-visible. However, using the proposed compatibility function that is based on clustering of unseen data improves label assignments (Figure~\ref{fig:kmeans}) although there is no change in the mapped signatures.
-Label assignments can also slightly improved when our clustering is used  (Figure~\ref{fig:clustering}) instead of k-means (Figure~\ref{fig:kmeans}). Finally, as Figure~\ref{fig:joint} shows using
+Figure~\ref{fig:knn} merely using mapping from Eq.~\eqref{eq:dic} results in poor signature embeddings and domain shift problem occurs. However, using the compatibility function proposed in Eq.~\ref{eq:label_assign} that is based on clustering of unseen data improves label assignments (Figure~\ref{fig:kmeans}) although there is no change in the mapped signatures.
+Label assignments can also slightly be improved when the clustering method proposed in Section \ref{clustering} is used (Figure~\ref{fig:clustering}) instead of k-means (Figure~\ref{fig:kmeans}). Finally, as Figure~\ref{fig:joint} shows using
 the mapping and class assignments found by JEaC, the domain shift problem is substantially alleviated and better signature embeddings are achieved.
+
+\textbf{More Analysis.}
+\begin{figure}[t]
+  \centering
+  \begin{subfigure}[b]{0.95\linewidth}
+    \includegraphics[width=\linewidth]{ff.png}
+    \label{fig:null}
+  \end{subfigure}
+%
+  \begin{subfigure}[b]{0.95\linewidth}
+    \includegraphics[width=\linewidth]{gg.png}
+% \caption{Points colored according to their ground truth labels}
+    \label{fig:truth}
+  \end{subfigure}
+  \caption{ Effect of number of clusters on multi class prediction accuracy for
+  \textbf{left} AwA and \textbf{right} CUB 2011}
+\end{figure}
+\textcolor{red}{
+We conduct more experiments to show that the performance of IEaC is not such sensitive to the number of clusters.
+ In the aforementioned experiments, we had set the number of clusters to $n_s+2n_u$ for this method.
+  However, according to Fig. \ref{}, we see that the IEaC performance is not such sensitive to the number of clusters and for a rather wide range of
+   numbers results do not change significantly.
+    Moreover, it is worth to mention that in our JEaC method number of clusters is no longer a parameter
+     since we directly assign samples to the unseen classes in this method.
+}
+\begin{figure}[t]
+  \centering
+    \includegraphics[width=\linewidth]{num_seen}
+    \label{fig:n_seen}
+    \caption{Comparing effect of number on seen classed used in training on zero-shot prediction accuracy
+      in aPascal/aYahoo dataset between JEaC and Zhang and Saligrama \cite{agnostic}.
+     }
+\end{figure}
+
+\textcolor{red}{
+Since the performance of zero-shot classification methods depends on the number of seen classes,
+ we intend to evaluate how much the performance of the proposed method degrades
+  by decreasing the number of seen classes. We compare performance of our JEaC method and those of \cite{agnostic}
+   (having highest accuracy among comparing methods in Table \ref{tab:results}) on aPascall/aYahoo dataset while fixing unseen categories
+   and varying the number of seen categories used from the dataset.
+  The results are presented in Fig. \ref{fig:n_seen} showing that JEaC is far less sensitive to number of seen categories and the gap between
+  performance of JEaC and that of \cite{agnostic} widens when decreasing number of seen categories used in training.
+  }
+
+
 %
 %
 %

@@ -175,8 +175,11 @@ textual descriptions or name of the categories can also be utilized as class sig
   % In \cite{Qiao2016}, a modification of \cite{emb15} is presented as for use with textual auxiliary information by decomposing the bilinear mapping.
 In \cite{Fu2016}, a set of vocabulary much larger than just seen and unseen class names is used and mapping from images to word embeddings is learned
 by  maximizing the margin with respect to all words in the vocabulary;
- this framework can be used in zero-shot and also supervised and open set learning problems.
-In  \cite{Akata2016}, authors propose to use multiple auxiliary information and also
+ this framework can be used in zero-shot and also supervised and open set learning problems. In \cite{ziad16} a tensor factorization approach is used
+ to predict attribute vectors for unseen categories using word embedding of their names, solving the problems in which no
+ attribute vector is provided for unseen categories (e.g. open set learning problem) by creating attribute vectors and then classifying using
+ Direct Attribute Prediction \cite{lampert09}.
+ In  \cite{Akata2016}, authors propose to use multiple auxiliary information and also
  semantic part annotations in the image domain to compensate for weaker supervision in textual data.
 %The nature of zero-shot learning problem in which usually only one document exists for each category has hindered using more sophisticated models for text embedding.
 Convolutional and recurrent neural networks have also been used for text embedding in \cite{Akata2016rnn}.
@@ -601,23 +604,15 @@ the mapping and class assignments found by JEaC, the domain shift problem is sub
 \textbf{More Analysis.}
 \begin{figure}[t]
   \centering
-  \begin{subfigure}[b]{0.95\linewidth}
-    \includegraphics[width=\linewidth]{ff.png}
-    \label{fig:null}
-  \end{subfigure}
-%
-  \begin{subfigure}[b]{0.95\linewidth}
-    \includegraphics[width=\linewidth]{gg.png}
-% \caption{Points colored according to their ground truth labels}
-    \label{fig:truth}
-  \end{subfigure}
+  \includegraphics[width=\linewidth]{num_clusters}
   \caption{ Effect of number of clusters on multi class prediction accuracy for
-  \textbf{left} AwA and \textbf{right} CUB 2011}
+  AwA and CUB 2011}
+  \label{fig:n_culsters}
 \end{figure}
 \textcolor{red}{
 We conduct more experiments to show that the performance of IEaC is not such sensitive to the number of clusters.
  In the aforementioned experiments, we had set the number of clusters to $n_s+2n_u$ for this method.
-  However, according to Fig. \ref{}, we see that the IEaC performance is not such sensitive to the number of clusters and for a rather wide range of
+  However, according to Fig. \ref{fig:n_clusters}, we see that the IEaC performance is not such sensitive to the number of clusters and for a rather wide range of
    numbers results do not change significantly.
     Moreover, it is worth to mention that in our JEaC method number of clusters is no longer a parameter
      since we directly assign samples to the unseen classes in this method.
